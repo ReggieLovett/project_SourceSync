@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type DragEvent, type FormEvent, type Keybo
 import { apiRequest, errorMessage, postJson } from "../../lib/api-client";
 import type { ChatMessage, ChatResponse, UploadedDocument } from "../../lib/types";
 import { MultilineText, plural } from "./CheckResultView";
+import { AttachIcon, SendIcon, StopIcon } from "./icons";
 import { useElapsedSeconds, useRequest } from "./hooks";
 
 export type CheckerDraft = { question: string; context: string; answer: string };
@@ -199,7 +200,7 @@ export default function DocumentChatbot({
             disabled={upload.busy}
             onClick={() => fileInput.current?.click()}
           >
-            +
+            <AttachIcon />
           </button>
           <label htmlFor="chat-input" hidden>Message</label>
           <textarea
@@ -212,13 +213,19 @@ export default function DocumentChatbot({
             onKeyDown={handleKeyDown}
           />
           {chat.busy ? (
-            <button type="button" data-role="send" onClick={chat.cancel} aria-label="Stop">■</button>
+            <button type="button" data-role="send" onClick={chat.cancel} aria-label="Stop">
+              <StopIcon />
+            </button>
           ) : (
-            <button type="submit" data-role="send" disabled={!input.trim()} aria-label="Send">↑</button>
+            <button type="submit" data-role="send" disabled={!input.trim()} aria-label="Send">
+              <SendIcon />
+            </button>
           )}
         </form>
         <p data-role="composer-hint">
-          <small>Enter to send, Shift+Enter for a new line. PDF or DOCX, up to 20 MB.</small>{" "}
+          <small>
+            <kbd>Enter</kbd> to send · <kbd>Shift</kbd> + <kbd>Enter</kbd> for a new line · PDF or DOCX, up to 20 MB
+          </small>{" "}
           {messages.length > 0 ? (
             <button type="button" disabled={chat.busy} onClick={() => { setMessages([]); setChatError(""); }}>
               Clear chat

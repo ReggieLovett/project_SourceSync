@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import type { CheckResult, Verdict } from "../../lib/types";
 
 // Verdict colors are conveyed with emoji markers in the markup itself, and
@@ -48,10 +48,25 @@ export function plural(count: number, noun: string): string {
   return `${count.toLocaleString()} ${noun}${count === 1 ? "" : "s"}`;
 }
 
+/**
+ * True for a moment after a result first renders. The stylesheet stamps the verdict
+ * seals in only while it is set, so the animation plays once when a check lands and
+ * not again each time the mode is shown.
+ */
+function useFresh(ms = 2000): boolean {
+  const [fresh, setFresh] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setFresh(false), ms);
+    return () => clearTimeout(timer);
+  }, [ms]);
+  return fresh;
+}
+
 export function CheckResultView({ result }: { result: CheckResult }) {
   const { counts, metrics } = result;
+  const fresh = useFresh();
   return (
-    <article aria-label="Check result">
+    <article aria-label="Check result" data-fresh={fresh ? "true" : undefined}>
       <h3>Evaluation scores</h3>
       <dl>
         <dt>Faithfulness</dt>
@@ -65,9 +80,10 @@ export function CheckResultView({ result }: { result: CheckResult }) {
         <dt>Context Relevance</dt>
         <dd>{metrics.contextRelevance}/100 — {metrics.contextRelevanceReason}</dd>
         <dt>Verdicts</dt>
-        <dd>
-          <VerdictLabel verdict="Supported" />: {counts.supported} · <VerdictLabel verdict="Contradicted" />: {counts.contradicted} ·{" "}
-          <VerdictLabel verdict="Unsupported" />: {counts.unsupported}
+        <dd data-role="verdict-counts">
+          <span><VerdictLabel verdict="Supported" /> {counts.supported}</span>{" "}
+          <span><VerdictLabel verdict="Contradicted" /> {counts.contradicted}</span>{" "}
+          <span><VerdictLabel verdict="Unsupported" /> {counts.unsupported}</span>
         </dd>
         <dt>Mode</dt>
         <dd>
@@ -83,7 +99,7 @@ export function CheckResultView({ result }: { result: CheckResult }) {
       {result.claims.length === 0 ? (
         <p>No factual claims were found in the answer.</p>
       ) : (
-        <table>
+        <table data-role="claims">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -98,9 +114,9 @@ export function CheckResultView({ result }: { result: CheckResult }) {
           <tbody>
             {result.claims.map((claim, index) => (
               <tr key={claim.id} data-verdict={claim.verdict}>
-                <td>{index + 1}</td>
-                <td>{claim.claim}</td>
-                <td>
+                <td data-label="#">{index + 1}</td>
+                <td data-label="Claim">{claim.claim}</td>
+                <td data-label="Verdict">
                   <VerdictLabel verdict={claim.verdict} />
                   {claim.modelVerdict !== claim.verdict ? (
                     <>
@@ -109,9 +125,9 @@ export function CheckResultView({ result }: { result: CheckResult }) {
                     </>
                   ) : null}
                 </td>
-                {result.strictnessMode ? <td>{claim.literalMatch === null ? "—" : claim.literalMatch ? "Yes" : "No"}</td> : null}
-                <td>{claim.confidence.toFixed(2)}</td>
-                <td>
+                {result.strictnessMode ? <td data-label="Literal match">{claim.literalMatch === null ? "—" : claim.literalMatch ? "Yes" : "No"}</td> : null}
+                <td data-label="Confidence">{claim.confidence.toFixed(2)}</td>
+                <td data-label="Evidence">
                   {claim.evidence ? <q>{claim.evidence}</q> : <em>No evidence in context</em>}
                   {claim.evidence && !claim.evidenceFound ? (
                     <>
@@ -120,7 +136,7 @@ export function CheckResultView({ result }: { result: CheckResult }) {
                     </>
                   ) : null}
                 </td>
-                <td>
+                <td data-label="Reasoning">
                   {claim.reasoning}
                   {claim.adjustments.map((adjustment) => (
                     <Fragment key={adjustment}>

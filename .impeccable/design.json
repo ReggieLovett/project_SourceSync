@@ -1,0 +1,585 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-08T21:37:12+00:00",
+  "title": "Design System: Source Sync",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "Sumi Ink",
+        "canonical": "#111110",
+        "tonalRamp": [
+          "oklch(15% 0.001 107)",
+          "oklch(26% 0.002 107)",
+          "oklch(38% 0.002 107)",
+          "oklch(49% 0.002 107)",
+          "oklch(61% 0.002 107)",
+          "oklch(72% 0.002 107)",
+          "oklch(84% 0.001 107)",
+          "oklch(95% 0.000 107)"
+        ],
+        "oklch": "oklch(17.7% 0.002 107)"
+      },
+      "ink-3": {
+        "role": "primary",
+        "displayName": "Warm Charcoal",
+        "canonical": "#2c2a27",
+        "tonalRamp": [
+          "oklch(15% 0.003 78)",
+          "oklch(26% 0.005 78)",
+          "oklch(38% 0.006 78)",
+          "oklch(49% 0.006 78)",
+          "oklch(61% 0.006 78)",
+          "oklch(72% 0.006 78)",
+          "oklch(84% 0.003 78)",
+          "oklch(95% 0.001 78)"
+        ],
+        "oklch": "oklch(28.6% 0.006 78)"
+      },
+      "on-ink": {
+        "role": "neutral",
+        "displayName": "Rice Paper on Ink",
+        "canonical": "#eceeed",
+        "tonalRamp": [
+          "oklch(15% 0.001 165)",
+          "oklch(26% 0.002 165)",
+          "oklch(38% 0.003 165)",
+          "oklch(49% 0.003 165)",
+          "oklch(61% 0.003 165)",
+          "oklch(72% 0.002 165)",
+          "oklch(84% 0.001 165)",
+          "oklch(95% 0.000 165)"
+        ],
+        "oklch": "oklch(94.7% 0.003 165)"
+      },
+      "on-ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Rice Paper on Ink",
+        "canonical": "rgba(236, 238, 237, 0.64)",
+        "tonalRamp": [
+          "oklch(15% 0.001 165)",
+          "oklch(26% 0.002 165)",
+          "oklch(38% 0.003 165)",
+          "oklch(49% 0.003 165)",
+          "oklch(61% 0.003 165)",
+          "oklch(72% 0.002 165)",
+          "oklch(84% 0.001 165)",
+          "oklch(95% 0.000 165)"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Washi Grey",
+        "canonical": "#e3e6e7",
+        "tonalRamp": [
+          "oklch(15% 0.002 220)",
+          "oklch(26% 0.003 220)",
+          "oklch(38% 0.004 220)",
+          "oklch(49% 0.004 220)",
+          "oklch(61% 0.004 220)",
+          "oklch(72% 0.003 220)",
+          "oklch(84% 0.002 220)",
+          "oklch(95% 0.001 220)"
+        ],
+        "oklch": "oklch(92.3% 0.004 220)"
+      },
+      "washi": {
+        "role": "neutral",
+        "displayName": "Pale Washi",
+        "canonical": "#eef0f0",
+        "tonalRamp": [
+          "oklch(15% 0.001 197)",
+          "oklch(26% 0.002 197)",
+          "oklch(38% 0.002 197)",
+          "oklch(49% 0.002 197)",
+          "oklch(61% 0.002 197)",
+          "oklch(72% 0.002 197)",
+          "oklch(84% 0.001 197)",
+          "oklch(95% 0.000 197)"
+        ],
+        "oklch": "oklch(95.4% 0.002 197)"
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "White Paper",
+        "canonical": "#fafbfb",
+        "tonalRamp": [
+          "oklch(15% 0.001 197)",
+          "oklch(26% 0.001 197)",
+          "oklch(38% 0.001 197)",
+          "oklch(49% 0.001 197)",
+          "oklch(61% 0.001 197)",
+          "oklch(72% 0.001 197)",
+          "oklch(84% 0.001 197)",
+          "oklch(95% 0.000 197)"
+        ],
+        "oklch": "oklch(98.7% 0.001 197)"
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "rgba(17, 17, 16, 0.12)",
+        "tonalRamp": [
+          "oklch(15% 0.001 107)",
+          "oklch(26% 0.002 107)",
+          "oklch(38% 0.002 107)",
+          "oklch(49% 0.002 107)",
+          "oklch(61% 0.002 107)",
+          "oklch(72% 0.002 107)",
+          "oklch(84% 0.001 107)",
+          "oklch(95% 0.000 107)"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "canonical": "rgba(17, 17, 16, 0.28)",
+        "tonalRamp": [
+          "oklch(15% 0.001 107)",
+          "oklch(26% 0.002 107)",
+          "oklch(38% 0.002 107)",
+          "oklch(49% 0.002 107)",
+          "oklch(61% 0.002 107)",
+          "oklch(72% 0.002 107)",
+          "oklch(84% 0.001 107)",
+          "oklch(95% 0.000 107)"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Ink Text",
+        "canonical": "#141413",
+        "tonalRamp": [
+          "oklch(15% 0.001 107)",
+          "oklch(26% 0.002 107)",
+          "oklch(38% 0.002 107)",
+          "oklch(49% 0.002 107)",
+          "oklch(61% 0.002 107)",
+          "oklch(72% 0.002 107)",
+          "oklch(84% 0.001 107)",
+          "oklch(95% 0.000 107)"
+        ],
+        "oklch": "oklch(19.1% 0.002 107)"
+      },
+      "text-soft": {
+        "role": "neutral",
+        "displayName": "Slate Text",
+        "canonical": "#4f5458",
+        "tonalRamp": [
+          "oklch(15% 0.005 242)",
+          "oklch(26% 0.008 242)",
+          "oklch(38% 0.009 242)",
+          "oklch(49% 0.009 242)",
+          "oklch(61% 0.009 242)",
+          "oklch(72% 0.009 242)",
+          "oklch(84% 0.005 242)",
+          "oklch(95% 0.002 242)"
+        ],
+        "oklch": "oklch(44.3% 0.009 242)"
+      },
+      "crimson": {
+        "role": "primary",
+        "displayName": "Seal Crimson",
+        "canonical": "#b0281e",
+        "tonalRamp": [
+          "oklch(15% 0.087 29)",
+          "oklch(26% 0.153 29)",
+          "oklch(38% 0.174 29)",
+          "oklch(49% 0.174 29)",
+          "oklch(61% 0.174 29)",
+          "oklch(72% 0.162 29)",
+          "oklch(84% 0.095 29)",
+          "oklch(95% 0.029 29)"
+        ],
+        "oklch": "oklch(49.7% 0.174 29)"
+      },
+      "crimson-deep": {
+        "role": "primary",
+        "displayName": "Deep Crimson",
+        "canonical": "#8a1d15",
+        "tonalRamp": [
+          "oklch(15% 0.073 29)",
+          "oklch(26% 0.128 29)",
+          "oklch(38% 0.146 29)",
+          "oklch(49% 0.146 29)",
+          "oklch(61% 0.146 29)",
+          "oklch(72% 0.135 29)",
+          "oklch(84% 0.080 29)",
+          "oklch(95% 0.024 29)"
+        ],
+        "oklch": "oklch(41.6% 0.146 29)"
+      },
+      "crimson-wash": {
+        "role": "primary",
+        "displayName": "Crimson Wash",
+        "canonical": "rgba(176, 40, 30, 0.07)",
+        "tonalRamp": [
+          "oklch(15% 0.087 29)",
+          "oklch(26% 0.153 29)",
+          "oklch(38% 0.174 29)",
+          "oklch(49% 0.174 29)",
+          "oklch(61% 0.174 29)",
+          "oklch(72% 0.162 29)",
+          "oklch(84% 0.095 29)",
+          "oklch(95% 0.029 29)"
+        ]
+      },
+      "gold": {
+        "role": "secondary",
+        "displayName": "Lacquer Gold",
+        "canonical": "#cfa95c",
+        "tonalRamp": [
+          "oklch(15% 0.053 84)",
+          "oklch(26% 0.093 84)",
+          "oklch(38% 0.106 84)",
+          "oklch(49% 0.106 84)",
+          "oklch(61% 0.106 84)",
+          "oklch(72% 0.098 84)",
+          "oklch(84% 0.058 84)",
+          "oklch(95% 0.018 84)"
+        ],
+        "oklch": "oklch(75.3% 0.106 84)"
+      },
+      "supported": {
+        "role": "tertiary",
+        "displayName": "Pine Green",
+        "canonical": "#2f6a45",
+        "tonalRamp": [
+          "oklch(15% 0.043 154)",
+          "oklch(26% 0.076 154)",
+          "oklch(38% 0.086 154)",
+          "oklch(49% 0.086 154)",
+          "oklch(61% 0.086 154)",
+          "oklch(72% 0.080 154)",
+          "oklch(84% 0.047 154)",
+          "oklch(95% 0.014 154)"
+        ],
+        "oklch": "oklch(47.4% 0.086 154)"
+      },
+      "supported-wash": {
+        "role": "tertiary",
+        "displayName": "Pine Wash",
+        "canonical": "rgba(47, 106, 69, 0.11)",
+        "tonalRamp": [
+          "oklch(15% 0.043 154)",
+          "oklch(26% 0.076 154)",
+          "oklch(38% 0.086 154)",
+          "oklch(49% 0.086 154)",
+          "oklch(61% 0.086 154)",
+          "oklch(72% 0.080 154)",
+          "oklch(84% 0.047 154)",
+          "oklch(95% 0.014 154)"
+        ]
+      },
+      "contradicted": {
+        "role": "tertiary",
+        "displayName": "Seal Crimson (Contradicted)",
+        "canonical": "#b0281e",
+        "tonalRamp": [
+          "oklch(15% 0.087 29)",
+          "oklch(26% 0.153 29)",
+          "oklch(38% 0.174 29)",
+          "oklch(49% 0.174 29)",
+          "oklch(61% 0.174 29)",
+          "oklch(72% 0.162 29)",
+          "oklch(84% 0.095 29)",
+          "oklch(95% 0.029 29)"
+        ],
+        "oklch": "oklch(49.7% 0.174 29)"
+      },
+      "contradicted-wash": {
+        "role": "tertiary",
+        "displayName": "Contradicted Wash",
+        "canonical": "rgba(176, 40, 30, 0.1)",
+        "tonalRamp": [
+          "oklch(15% 0.087 29)",
+          "oklch(26% 0.153 29)",
+          "oklch(38% 0.174 29)",
+          "oklch(49% 0.174 29)",
+          "oklch(61% 0.174 29)",
+          "oklch(72% 0.162 29)",
+          "oklch(84% 0.095 29)",
+          "oklch(95% 0.029 29)"
+        ]
+      },
+      "unsupported": {
+        "role": "tertiary",
+        "displayName": "Ochre Earth",
+        "canonical": "#7a5814",
+        "tonalRamp": [
+          "oklch(15% 0.046 80)",
+          "oklch(26% 0.081 80)",
+          "oklch(38% 0.092 80)",
+          "oklch(49% 0.092 80)",
+          "oklch(61% 0.092 80)",
+          "oklch(72% 0.085 80)",
+          "oklch(84% 0.050 80)",
+          "oklch(95% 0.015 80)"
+        ],
+        "oklch": "oklch(48.4% 0.092 80)"
+      },
+      "unsupported-wash": {
+        "role": "tertiary",
+        "displayName": "Ochre Wash",
+        "canonical": "rgba(122, 88, 20, 0.12)",
+        "tonalRamp": [
+          "oklch(15% 0.046 80)",
+          "oklch(26% 0.081 80)",
+          "oklch(38% 0.092 80)",
+          "oklch(49% 0.092 80)",
+          "oklch(61% 0.092 80)",
+          "oklch(72% 0.085 80)",
+          "oklch(84% 0.050 80)",
+          "oklch(95% 0.015 80)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Mode titles; uppercase, balanced wrap; 1.625rem under 48rem."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings within a mode; uppercase."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Menu-label sub-headings with a strong hairline running off to the right; uppercase."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text, max 72ch, lining numerals."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, field labels, legends, table headers, speaker labels, rail items; uppercase, tracked."
+      },
+      "seal": {
+        "displayName": "Seal",
+        "purpose": "Verdict seal words; uppercase. 0.9375rem at 0.08em inside the claims table."
+      },
+      "source": {
+        "displayName": "Source",
+        "purpose": "Quotes, blockquotes, evidence, and the checker's context field; size inherits."
+      }
+    },
+    "shadows": [
+      {
+        "name": "paper-lift",
+        "value": "0 1px 2px rgba(17, 17, 16, 0.05), 0 12px 28px -18px rgba(17, 17, 16, 0.3)",
+        "purpose": "Paper work surfaces only: score cards, tables, assistant answers."
+      },
+      {
+        "name": "composer-drop",
+        "value": "0 18px 34px -22px rgba(17, 17, 16, 0.7)",
+        "purpose": "Under the ink composer strip."
+      },
+      {
+        "name": "seal-ring",
+        "value": "inset 0 0 0 3px var(--verdict), inset 0 0 0 4px rgba(250, 251, 251, 0.5)",
+        "purpose": "Carved inner border on solid verdict seals."
+      },
+      {
+        "name": "seal-ring-hollow",
+        "value": "inset 0 0 0 2.5px var(--verdict)",
+        "purpose": "Ring of the hollow Unsupported seal."
+      },
+      {
+        "name": "key-cap",
+        "value": "inset 0 -1px 0 rgba(17, 17, 16, 0.28)",
+        "purpose": "Keyboard hints."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Button press, mode dot, message entrance, dropzone fade."
+      },
+      {
+        "name": "stamp",
+        "value": "360ms cubic-bezier(0.2, 0.9, 0.25, 1); delay 200ms + row * 110ms (row capped at 7)",
+        "purpose": "Verdict seals stamp in once when a result first renders (data-fresh, two seconds). Off under reduced motion."
+      },
+      {
+        "name": "press",
+        "value": "transform scale(0.97), 160ms ease-out",
+        "purpose": "Button active state; disabled under reduced motion."
+      },
+      {
+        "name": "state-color",
+        "value": "150ms ease",
+        "purpose": "Border, background, and colour changes on controls."
+      },
+      {
+        "name": "mode-dot",
+        "value": "scale 0 to 1, 220ms ease-out",
+        "purpose": "Crimson dot on the current rail mode."
+      },
+      {
+        "name": "message-in",
+        "value": "opacity 0 and translateY(5px) to rest, 220ms ease-out via @starting-style",
+        "purpose": "New chat messages."
+      },
+      {
+        "name": "breathe",
+        "value": "opacity to 0.25 at 50%, 1.2s ease-in-out infinite",
+        "purpose": "Status square while working."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact",
+        "value": "48rem",
+        "purpose": "Rail becomes a top tab bar; claims table restacks into blocks."
+      }
+    ],
+    "masks": [
+      {
+        "name": "stamp",
+        "purpose": "Uneven stamp edge for verdict seals (SVG turbulence and displacement in a data URI, --stamp in app/globals.css)."
+      },
+      {
+        "name": "seal",
+        "purpose": "Logo silhouette with strokes cut out, for the chat empty-state watermark at 9% ink (--seal in app/globals.css)."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ink action for submit and the main action of a mode; never crimson.",
+      "html": "<button class=\"ds-btn ds-btn-primary\">Run check</button>",
+      "css": ":host{--ink:#111110;--ink-3:#2c2a27;--on-ink:#eceeed;--on-ink-soft:rgba(236,238,237,.64);--ground:#e3e6e7;--washi:#eef0f0;--paper:#fafbfb;--rule:rgba(17,17,16,.12);--rule-strong:rgba(17,17,16,.28);--text:#141413;--text-soft:#4f5458;--crimson:#b0281e;--crimson-deep:#8a1d15;--crimson-wash:rgba(176,40,30,.07);--gold:#cfa95c;--supported:#2f6a45;--contradicted:#b0281e;--unsupported:#7a5814;--unsupported-wash:rgba(122,88,20,.12);--sans:'Zen Kaku Gothic New','Hiragino Sans',ui-sans-serif,system-ui,sans-serif;--serif:'Shippori Mincho','Hiragino Mincho ProN',Georgia,serif;--ease-out:cubic-bezier(0.23,1,0.32,1);--lift:0 1px 2px rgba(17,17,16,.05),0 12px 28px -18px rgba(17,17,16,.3);} .ds-btn{display:inline-flex;align-items:center;gap:.55rem;min-height:2.625rem;padding:.5rem 1.15rem;border:1px solid var(--rule-strong);border-radius:0;background:var(--paper);color:var(--text);font:500 .8125rem/1.2 var(--sans);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:transform 160ms var(--ease-out),background-color 150ms ease,border-color 150ms ease,color 150ms ease;} .ds-btn:hover{border-color:var(--ink);} .ds-btn:active{transform:scale(.97);} .ds-btn:focus-visible{outline:2px solid var(--crimson);outline-offset:2px;} .ds-btn-primary{border-color:var(--ink);background:var(--ink);color:var(--on-ink);} .ds-btn-primary:hover{border-color:var(--ink-3);background:var(--ink-3);}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Default paper button with a strong hairline; border darkens to ink on hover.",
+      "html": "<button class=\"ds-btn\">Load example</button>",
+      "css": ":host{--ink:#111110;--ink-3:#2c2a27;--on-ink:#eceeed;--on-ink-soft:rgba(236,238,237,.64);--ground:#e3e6e7;--washi:#eef0f0;--paper:#fafbfb;--rule:rgba(17,17,16,.12);--rule-strong:rgba(17,17,16,.28);--text:#141413;--text-soft:#4f5458;--crimson:#b0281e;--crimson-deep:#8a1d15;--crimson-wash:rgba(176,40,30,.07);--gold:#cfa95c;--supported:#2f6a45;--contradicted:#b0281e;--unsupported:#7a5814;--unsupported-wash:rgba(122,88,20,.12);--sans:'Zen Kaku Gothic New','Hiragino Sans',ui-sans-serif,system-ui,sans-serif;--serif:'Shippori Mincho','Hiragino Mincho ProN',Georgia,serif;--ease-out:cubic-bezier(0.23,1,0.32,1);--lift:0 1px 2px rgba(17,17,16,.05),0 12px 28px -18px rgba(17,17,16,.3);} .ds-btn{display:inline-flex;align-items:center;gap:.55rem;min-height:2.625rem;padding:.5rem 1.15rem;border:1px solid var(--rule-strong);border-radius:0;background:var(--paper);color:var(--text);font:500 .8125rem/1.2 var(--sans);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:transform 160ms var(--ease-out),background-color 150ms ease,border-color 150ms ease,color 150ms ease;} .ds-btn:hover{border-color:var(--ink);} .ds-btn:active{transform:scale(.97);} .ds-btn:focus-visible{outline:2px solid var(--crimson);outline-offset:2px;} "
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Square paper field with uppercase tracked label and crimson caret; ink border on focus.",
+      "html": "<label class=\"ds-label\">Answer<textarea class=\"ds-input\" rows=\"3\" placeholder=\"Paste the AI answer\"></textarea></label>",
+      "css": ":host{--ink:#111110;--ink-3:#2c2a27;--on-ink:#eceeed;--on-ink-soft:rgba(236,238,237,.64);--ground:#e3e6e7;--washi:#eef0f0;--paper:#fafbfb;--rule:rgba(17,17,16,.12);--rule-strong:rgba(17,17,16,.28);--text:#141413;--text-soft:#4f5458;--crimson:#b0281e;--crimson-deep:#8a1d15;--crimson-wash:rgba(176,40,30,.07);--gold:#cfa95c;--supported:#2f6a45;--contradicted:#b0281e;--unsupported:#7a5814;--unsupported-wash:rgba(122,88,20,.12);--sans:'Zen Kaku Gothic New','Hiragino Sans',ui-sans-serif,system-ui,sans-serif;--serif:'Shippori Mincho','Hiragino Mincho ProN',Georgia,serif;--ease-out:cubic-bezier(0.23,1,0.32,1);--lift:0 1px 2px rgba(17,17,16,.05),0 12px 28px -18px rgba(17,17,16,.3);} .ds-label{display:block;color:var(--text-soft);font:500 .8125rem/1.4 var(--sans);letter-spacing:.11em;text-transform:uppercase;} .ds-input{display:block;box-sizing:border-box;width:100%;margin-top:.4rem;padding:.75rem .9rem;border:1px solid var(--rule-strong);border-radius:0;background:var(--paper);color:var(--text);caret-color:var(--crimson);font:400 1rem/1.6 var(--sans);letter-spacing:normal;text-transform:none;transition:border-color 150ms ease;resize:vertical;} .ds-input:hover{border-color:rgba(17,17,16,.45);} .ds-input:focus-visible{border-color:var(--ink);outline:2px solid var(--crimson);outline-offset:2px;}"
+    },
+    {
+      "name": "Mode Rail",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "Ink rail; the current mode is a washi block with a crimson square dot; gold focus.",
+      "html": "<nav class=\"ds-rail\"><button class=\"ds-nav\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" aria-hidden=\"true\"><path d=\"M4 5h16v11H10.5L6 19.5V16H4z\"/></svg>Chat</button><button class=\"ds-nav\" aria-current=\"page\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" aria-hidden=\"true\"><rect x=\"4\" y=\"4\" width=\"16\" height=\"16\"/><path d=\"M8.5 12.5l2.5 2.5 4.5-5\"/></svg>Hallucination checker</button></nav>",
+      "css": ":host{--ink:#111110;--ink-3:#2c2a27;--on-ink:#eceeed;--on-ink-soft:rgba(236,238,237,.64);--ground:#e3e6e7;--washi:#eef0f0;--paper:#fafbfb;--rule:rgba(17,17,16,.12);--rule-strong:rgba(17,17,16,.28);--text:#141413;--text-soft:#4f5458;--crimson:#b0281e;--crimson-deep:#8a1d15;--crimson-wash:rgba(176,40,30,.07);--gold:#cfa95c;--supported:#2f6a45;--contradicted:#b0281e;--unsupported:#7a5814;--unsupported-wash:rgba(122,88,20,.12);--sans:'Zen Kaku Gothic New','Hiragino Sans',ui-sans-serif,system-ui,sans-serif;--serif:'Shippori Mincho','Hiragino Mincho ProN',Georgia,serif;--ease-out:cubic-bezier(0.23,1,0.32,1);--lift:0 1px 2px rgba(17,17,16,.05),0 12px 28px -18px rgba(17,17,16,.3);} .ds-rail{display:grid;gap:.25rem;width:18rem;padding:.75rem;background:var(--ink);} .ds-nav{position:relative;display:flex;align-items:center;gap:.8rem;width:100%;min-height:2.875rem;padding:.6rem .9rem .6rem 1.4rem;border:0;border-radius:0;background:transparent;color:var(--on-ink-soft);font:500 .8125rem/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase;text-align:left;cursor:pointer;transition:background-color 150ms ease,color 150ms ease;} .ds-nav::before{content:'';position:absolute;top:50%;left:.55rem;width:.375rem;height:.375rem;background:var(--crimson);transform:translateY(-50%) scale(0);transition:transform 220ms var(--ease-out);} .ds-nav:hover:not([aria-current]){background:rgba(236,238,237,.07);color:var(--on-ink);} .ds-nav[aria-current=page]{background:var(--washi);color:var(--ink);font-weight:700;} .ds-nav[aria-current=page]::before{transform:translateY(-50%) scale(1);} .ds-nav:focus-visible{outline:2px solid var(--gold);outline-offset:-2px;}"
+    },
+    {
+      "name": "Verdict Seals",
+      "kind": "custom",
+      "refersTo": "seal-supported",
+      "description": "The signature: stamped, masked, tilted seals. Solid for Supported and Contradicted, hollow for Unsupported; the word is always printed.",
+      "html": "<div class=\"ds-row\"><span class=\"ds-seal ds-sup\">Supported</span><span class=\"ds-seal ds-con\">Contradicted</span><span class=\"ds-seal ds-uns\">Unsupported</span></div>",
+      "css": ":host{--ink:#111110;--ink-3:#2c2a27;--on-ink:#eceeed;--on-ink-soft:rgba(236,238,237,.64);--ground:#e3e6e7;--washi:#eef0f0;--paper:#fafbfb;--rule:rgba(17,17,16,.12);--rule-strong:rgba(17,17,16,.28);--text:#141413;--text-soft:#4f5458;--crimson:#b0281e;--crimson-deep:#8a1d15;--crimson-wash:rgba(176,40,30,.07);--gold:#cfa95c;--supported:#2f6a45;--contradicted:#b0281e;--unsupported:#7a5814;--unsupported-wash:rgba(122,88,20,.12);--sans:'Zen Kaku Gothic New','Hiragino Sans',ui-sans-serif,system-ui,sans-serif;--serif:'Shippori Mincho','Hiragino Mincho ProN',Georgia,serif;--ease-out:cubic-bezier(0.23,1,0.32,1);--lift:0 1px 2px rgba(17,17,16,.05),0 12px 28px -18px rgba(17,17,16,.3);} .ds-seal{--tilt:-1.5deg;display:inline-flex;align-items:center;padding:.42rem .8rem .38rem;background:var(--v);box-shadow:inset 0 0 0 3px var(--v),inset 0 0 0 4px rgba(250,251,251,.5);color:var(--paper);font:700 .8125rem/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;transform:rotate(var(--tilt));-webkit-mask:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 36' preserveAspectRatio='none'%3E%3Cfilter id='s' x='-5%25' y='-15%25' width='110%25' height='130%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.07 .3' numOctaves='2' seed='7' result='w'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='w' scale='2.6' xChannelSelector='R' yChannelSelector='G' result='d'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' seed='3' result='g'/%3E%3CfeColorMatrix in='g' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -30 21.3' result='h'/%3E%3CfeComposite in='d' in2='h' operator='in'/%3E%3C/filter%3E%3Crect x='1.5' y='1.5' width='117' height='33' filter='url(%23s)'/%3E%3C/svg%3E\") center/100% 100% no-repeat;mask:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 36' preserveAspectRatio='none'%3E%3Cfilter id='s' x='-5%25' y='-15%25' width='110%25' height='130%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.07 .3' numOctaves='2' seed='7' result='w'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='w' scale='2.6' xChannelSelector='R' yChannelSelector='G' result='d'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' seed='3' result='g'/%3E%3CfeColorMatrix in='g' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -30 21.3' result='h'/%3E%3CfeComposite in='d' in2='h' operator='in'/%3E%3C/filter%3E%3Crect x='1.5' y='1.5' width='117' height='33' filter='url(%23s)'/%3E%3C/svg%3E\") center/100% 100% no-repeat;} .ds-row{display:flex;flex-wrap:wrap;gap:1rem;padding:1rem;background:var(--paper);} .ds-sup{--v:var(--supported);} .ds-con{--v:var(--contradicted);--tilt:1deg;} .ds-uns{--v:var(--unsupported);background:var(--unsupported-wash);box-shadow:inset 0 0 0 2.5px var(--v);color:var(--v);} @media (prefers-reduced-motion:no-preference){.ds-seal{animation:ds-stamp 360ms cubic-bezier(0.2,0.9,0.25,1) both;} .ds-con{animation-delay:110ms;} .ds-uns{animation-delay:220ms;}} @keyframes ds-stamp{0%{opacity:0;filter:blur(3px);transform:scale(1.5) rotate(-8deg);}55%{opacity:1;filter:blur(.6px);transform:scale(.93) rotate(var(--tilt));}100%{opacity:1;filter:blur(0);transform:scale(1) rotate(var(--tilt));}}"
+    },
+    {
+      "name": "Score Card",
+      "kind": "card",
+      "refersTo": "work-surface",
+      "description": "Paper work surface with hairline border and paper lift; a two-column definition list with tabular numerals.",
+      "html": "<dl class=\"ds-card\"><dt>Faithfulness</dt><dd>67/100</dd><dt>Answer relevance</dt><dd>92/100</dd><dt>Mode</dt><dd>Standard</dd></dl>",
+      "css": ":host{--ink:#111110;--ink-3:#2c2a27;--on-ink:#eceeed;--on-ink-soft:rgba(236,238,237,.64);--ground:#e3e6e7;--washi:#eef0f0;--paper:#fafbfb;--rule:rgba(17,17,16,.12);--rule-strong:rgba(17,17,16,.28);--text:#141413;--text-soft:#4f5458;--crimson:#b0281e;--crimson-deep:#8a1d15;--crimson-wash:rgba(176,40,30,.07);--gold:#cfa95c;--supported:#2f6a45;--contradicted:#b0281e;--unsupported:#7a5814;--unsupported-wash:rgba(122,88,20,.12);--sans:'Zen Kaku Gothic New','Hiragino Sans',ui-sans-serif,system-ui,sans-serif;--serif:'Shippori Mincho','Hiragino Mincho ProN',Georgia,serif;--ease-out:cubic-bezier(0.23,1,0.32,1);--lift:0 1px 2px rgba(17,17,16,.05),0 12px 28px -18px rgba(17,17,16,.3);} .ds-card{display:grid;grid-template-columns:max-content 1fr;align-items:baseline;gap:.7rem 2rem;margin:0;padding:1.25rem 1.5rem;border:1px solid var(--rule);background:var(--paper);box-shadow:var(--lift);font:400 1.125rem/1.65 var(--sans);color:var(--text);font-variant-numeric:lining-nums tabular-nums;} .ds-card dt{color:var(--text-soft);font-size:.8125rem;font-weight:500;letter-spacing:.11em;text-transform:uppercase;} .ds-card dd{margin:0;}"
+    },
+    {
+      "name": "Composer",
+      "kind": "input",
+      "refersTo": "composer",
+      "description": "Ink hint-bar strip pinned under the chat; ghost attach, washi send, crimson top edge on focus, gold caret and focus.",
+      "html": "<form class=\"ds-composer\"><button type=\"button\" class=\"ds-cbtn ds-attach\" aria-label=\"Attach\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg></button><textarea class=\"ds-ctext\" rows=\"1\" placeholder=\"Ask about the document\"></textarea><button class=\"ds-cbtn ds-send\" aria-label=\"Send\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"square\" stroke-linejoin=\"miter\" aria-hidden=\"true\"><path d=\"M12 19V5M6 11l6-6 6 6\"/></svg></button></form>",
+      "css": ":host{--ink:#111110;--ink-3:#2c2a27;--on-ink:#eceeed;--on-ink-soft:rgba(236,238,237,.64);--ground:#e3e6e7;--washi:#eef0f0;--paper:#fafbfb;--rule:rgba(17,17,16,.12);--rule-strong:rgba(17,17,16,.28);--text:#141413;--text-soft:#4f5458;--crimson:#b0281e;--crimson-deep:#8a1d15;--crimson-wash:rgba(176,40,30,.07);--gold:#cfa95c;--supported:#2f6a45;--contradicted:#b0281e;--unsupported:#7a5814;--unsupported-wash:rgba(122,88,20,.12);--sans:'Zen Kaku Gothic New','Hiragino Sans',ui-sans-serif,system-ui,sans-serif;--serif:'Shippori Mincho','Hiragino Mincho ProN',Georgia,serif;--ease-out:cubic-bezier(0.23,1,0.32,1);--lift:0 1px 2px rgba(17,17,16,.05),0 12px 28px -18px rgba(17,17,16,.3);} .ds-composer{position:relative;display:flex;align-items:flex-end;gap:.5rem;padding:.5rem;background:var(--ink);box-shadow:0 18px 34px -22px rgba(17,17,16,.7);color:var(--on-ink);} .ds-composer::after{content:'';position:absolute;inset:0 0 auto;height:2px;background:var(--crimson);opacity:0;transition:opacity 150ms ease;} .ds-composer:focus-within::after{opacity:1;} .ds-ctext{flex:1;min-height:2.75rem;padding:.6rem .35rem;border:0;background:transparent;outline:none;color:var(--on-ink);caret-color:var(--gold);font:400 1.0625rem/1.6 var(--sans);resize:none;} .ds-ctext::placeholder{color:var(--on-ink-soft);} .ds-cbtn{display:inline-flex;align-items:center;justify-content:center;padding:0;flex:none;width:2.75rem;height:2.75rem;border:1px solid;border-radius:0;font:500 1rem var(--sans);cursor:pointer;transition:background-color 150ms ease,border-color 150ms ease;} .ds-attach{border-color:rgba(236,238,237,.3);background:transparent;color:var(--on-ink);} .ds-attach:hover{border-color:var(--on-ink);background:#1c1b19;} .ds-send{border-color:var(--washi);background:var(--washi);color:var(--ink);} .ds-send:hover{border-color:var(--paper);background:var(--paper);} .ds-cbtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}"
+    },
+    {
+      "name": "Sub-heading Label",
+      "kind": "custom",
+      "refersTo": "title",
+      "description": "Menu-label h3 with a strong hairline running off to the right.",
+      "html": "<h3 class=\"ds-h3\">Extracted claims (4)</h3>",
+      "css": ":host{--ink:#111110;--ink-3:#2c2a27;--on-ink:#eceeed;--on-ink-soft:rgba(236,238,237,.64);--ground:#e3e6e7;--washi:#eef0f0;--paper:#fafbfb;--rule:rgba(17,17,16,.12);--rule-strong:rgba(17,17,16,.28);--text:#141413;--text-soft:#4f5458;--crimson:#b0281e;--crimson-deep:#8a1d15;--crimson-wash:rgba(176,40,30,.07);--gold:#cfa95c;--supported:#2f6a45;--contradicted:#b0281e;--unsupported:#7a5814;--unsupported-wash:rgba(122,88,20,.12);--sans:'Zen Kaku Gothic New','Hiragino Sans',ui-sans-serif,system-ui,sans-serif;--serif:'Shippori Mincho','Hiragino Mincho ProN',Georgia,serif;--ease-out:cubic-bezier(0.23,1,0.32,1);--lift:0 1px 2px rgba(17,17,16,.05),0 12px 28px -18px rgba(17,17,16,.3);} .ds-h3{display:flex;align-items:center;gap:.9rem;margin:0;color:var(--text);font:700 .8125rem/1.3 var(--sans);letter-spacing:.16em;text-transform:uppercase;} .ds-h3::after{content:'';flex:1;height:1px;background:var(--rule-strong);}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Stamped Ledger",
+    "overview": "Source Sync is a clean working dashboard that borrows a samurai-era menu language without wearing it as a costume. A sumi-ink rail runs down the left; the work happens on a cool washi-grey ground, on white paper surfaces with hairline rules. Controls are standard, crisp, and square. The world arrives in one place: every verdict is a hand-stamped seal, uneven at the edges, tilted a degree or so, pressed beside the verbatim quote that justifies it.\n\nThe system is built for a projector. Hierarchy comes from scale, weight, and wide uppercase tracking rather than ornament, and the three verdicts stay distinct by fill, word, and colour, each carrying the meaning on its own. Brush texture is rationed to the seals (the logo and the verdict stamps); everything else is plain ink on paper.\n\nMotion is equally rationed: one authored moment, the seals stamping down row by row the first time a check result lands, and otherwise only small state transitions.",
+    "keyCharacteristics": [
+      "Ink rail, washi-grey ground, white paper work surfaces.",
+      "Square corners throughout; 1px hairline rules for structure.",
+      "Zen Kaku Gothic New for the interface, uppercase and tracked for labels; Shippori Mincho for source text.",
+      "Crimson is meaningful and rare; primary actions are ink.",
+      "Verdict seals are the signature: masked stamp edges, slight tilt, one-time stamp-in."
+    ],
+    "rules": [
+      {
+        "name": "The Crimson Means Something Rule",
+        "body": "Crimson is reserved for the brand seal, the current mode, focus, errors, and Contradicted. Primary actions are ink, never crimson, because crimson already says Contradicted.",
+        "section": "colors"
+      },
+      {
+        "name": "The Gold-On-Ink Rule",
+        "body": "Gold appears only on ink surfaces. It never touches paper or the washi ground.",
+        "section": "colors"
+      },
+      {
+        "name": "The Three Verdicts Rule",
+        "body": "Supported, Contradicted, and Unsupported each get their own hue, and the verdict word is always printed in the seal. No verdict depends on colour alone.",
+        "section": "colors"
+      },
+      {
+        "name": "The Menu Label Rule",
+        "body": "Interface labels are uppercase and tracked between 0.08em and 0.2em. Sentences stay in sentence case: body copy, checkbox labels, inputs, and source text are never uppercased.",
+        "section": "typography"
+      },
+      {
+        "name": "The Printed Source Rule",
+        "body": "Anything quoted from the source document is set in Shippori Mincho. Interface copy never is.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Numbers Rule",
+        "body": "Score cards and tables use lining, tabular numerals so figures align in columns.",
+        "section": "typography"
+      },
+      {
+        "name": "The Paper Lift Rule",
+        "body": "Only paper work surfaces take the lift. Buttons, inputs, and nav items are flat.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Seal Is The Only Brush Rule",
+        "body": "Brush and ink texture live only in the logo and the verdict seals. Buttons, banners, surfaces, and the ground stay clean.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do keep every interface corner square (0px) and build structure from 1px hairlines.",
+      "Do make primary actions ink (`ink`) and reserve crimson for the brand seal, current mode, focus, errors, and Contradicted.",
+      "Do print the verdict word inside every seal and keep Unsupported hollow, so all three verdicts read without colour.",
+      "Do set quotes, evidence, and source context in Shippori Mincho, and interface labels in uppercase tracked Zen Kaku Gothic New.",
+      "Do put work on white paper surfaces with the paper lift over the washi-grey ground.",
+      "Do gate the stamp animation to the first render of a result and honour `prefers-reduced-motion`.",
+      "Do use the authored 24px line-icon set (1.6 stroke, square caps) for new icons."
+    ],
+    "donts": [
+      "Don't use brush strokes, paper grain, or ink banners on buttons, surfaces, or backgrounds; texture belongs only to the seals.",
+      "Don't make a primary button crimson.",
+      "Don't put gold on paper or the washi ground.",
+      "Don't mark list items or the active mode with a side stripe wider than 1px; the current mode is a washi block with a crimson dot.",
+      "Don't replay the stamp-in on every visit or add other decorative entrance animation.",
+      "Don't use game assets, names, characters, or logos; the samurai menu language is inspiration only."
+    ]
+  }
+}
