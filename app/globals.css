@@ -610,7 +610,7 @@ table {
   width: 100%;
   margin: 0.5rem 0 1.5rem;
   border-collapse: collapse;
-  font-size: 0.9688rem;
+  font-size: 0.9375rem;
   font-variant-numeric: lining-nums tabular-nums;
 }
 
@@ -990,7 +990,7 @@ section[data-mode="chat"] {
   outline: none;
   color: var(--on-ink);
   caret-color: var(--gold);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   resize: none;
   field-sizing: content;
 }

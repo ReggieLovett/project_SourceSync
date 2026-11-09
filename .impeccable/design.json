@@ -339,6 +339,10 @@
         "displayName": "Display",
         "purpose": "Mode titles; uppercase, balanced wrap; 1.625rem under 48rem."
       },
+      "display-compact": {
+        "displayName": "Display Compact",
+        "purpose": "Mode titles under 48rem (1.625rem)."
+      },
       "headline": {
         "displayName": "Headline",
         "purpose": "Section headings within a mode; uppercase."
@@ -350,6 +354,14 @@
       "body": {
         "displayName": "Body",
         "purpose": "Running text, max 72ch, lining numerals."
+      },
+      "body-sm": {
+        "displayName": "Body Small",
+        "purpose": "Secondary copy: notes, alerts, status, checkbox labels, summaries, attachments, table cells (0.9375rem)."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Small meta text, composer hint, verdict legend (0.875rem)."
       },
       "label": {
         "displayName": "Label",

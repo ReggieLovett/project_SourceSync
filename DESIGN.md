@@ -30,6 +30,12 @@ typography:
     fontWeight: 700
     lineHeight: 1.1
     letterSpacing: "0.1em"
+  display-compact:
+    fontFamily: "Zen Kaku Gothic New, Hiragino Sans, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.625rem"
+    fontWeight: 700
+    lineHeight: 1.1
+    letterSpacing: "0.1em"
   headline:
     fontFamily: "Zen Kaku Gothic New, Hiragino Sans, ui-sans-serif, system-ui, sans-serif"
     fontSize: "1.25rem"
@@ -47,6 +53,18 @@ typography:
     fontSize: "1.125rem"
     fontWeight: 400
     lineHeight: 1.65
+    fontFeature: "lnum"
+  body-sm:
+    fontFamily: "Zen Kaku Gothic New, Hiragino Sans, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.9375rem"
+    fontWeight: 400
+    lineHeight: 1.6
+    fontFeature: "lnum"
+  caption:
+    fontFamily: "Zen Kaku Gothic New, Hiragino Sans, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: 1.5
     fontFeature: "lnum"
   label:
     fontFamily: "Zen Kaku Gothic New, Hiragino Sans, ui-sans-serif, system-ui, sans-serif"
@@ -202,10 +220,12 @@ A near-monochrome ink-and-paper palette with one meaningful red and three verdic
 **Character:** A quiet Japanese gothic carries the interface like menu text: uppercase, widely tracked, confident at a distance. A Mincho serif sets anything quoted from the source, so evidence reads as printed document rather than UI.
 
 ### Hierarchy
-- **Display** (700, 2.5rem, 1.1, 0.1em, uppercase; 1.625rem under 48rem): the mode title at the top of each mode, balanced wrap.
+- **Display** (700, 2.5rem, 1.1, 0.1em, uppercase): the mode title at the top of each mode, balanced wrap. **Display Compact** (1.625rem) replaces it under 48rem.
 - **Headline** (700, 1.25rem, 1.25, 0.08em, uppercase): section headings within a mode.
 - **Title** (700, 0.8125rem, 1.3, 0.16em, uppercase): menu-label sub-headings with a strong hairline running off to the right.
-- **Body** (400, 1.125rem, 1.65, lining numerals): running text, max 72ch; header blurbs max 66ch.
+- **Body** (400, 1.125rem, 1.65, lining numerals): running text, max 72ch; header blurbs max 66ch; the composer's input.
+- **Body Small** (400, 0.9375rem, 1.6): secondary copy: notes, alerts, status lines, checkbox labels, summaries, attachments, the file input, table cells, and header blurbs under 48rem.
+- **Caption** (400, 0.875rem, 1.5): `small` meta text, the composer hint, and the verdict legend.
 - **Label** (500, 0.8125rem, 0.1 to 0.11em, uppercase): buttons, field labels, legends (700), definition terms, table headers, speaker labels, rail items, stack list.
 - **Seal** (700, 0.8125rem, 0.12em, uppercase; 0.9375rem at 0.08em inside the claims table): verdict seals.
 - **Source** (Shippori Mincho 500, inherits size, 1.7 in blockquotes): quotes, blockquotes, the checker's context field.
