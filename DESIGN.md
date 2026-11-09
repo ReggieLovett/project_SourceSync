@@ -223,7 +223,7 @@ A two-column app shell: an 18rem ink rail on the left and a scrolling main colum
 
 Each mode opens with a header block (display title, one-line purpose in `text-soft`) closed by a strong hairline, then the work area. Vertical rhythm runs on a loose rem scale: 0.4rem inside label pairs, 0.75rem between controls, 1.25rem to 1.75rem between groups and fieldsets, 2.5rem before menu-label sub-headings. Action rows are wrapping flex rows with a 0.6rem by 0.75rem gap.
 
-Below 48rem the rail becomes an ink tab bar across the top: the brand shrinks (1.75rem seal), the mode list scrolls horizontally, and the stack list is hidden. Main padding drops to 1.25rem by 1rem. Definition lists collapse to one column, wide tables scroll sideways, and the claims table restacks each claim as a grid block (number and claim, then seal and confidence, then evidence, then reasoning) with column names printed as labels.
+Below 48rem the rail becomes an ink tab bar across the top: the brand logo shrinks to 1.8rem tall, the mode list scrolls horizontally, and the stack list is hidden. Main padding drops to 1.25rem by 1rem. Definition lists collapse to one column, wide tables scroll sideways, and the claims table restacks each claim as a grid block (number and claim, then seal and confidence, then evidence, then reasoning) with column names printed as labels.
 
 ## Elevation & Depth
 

@@ -1,12 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { useState, type ComponentType } from "react";
+import logo from "./assets/source-sync-logo.png";
 import BatchProcessing, { type LoadedItems } from "./components/BatchProcessing";
 import DocumentChatbot, { type CheckerDraft } from "./components/DocumentChatbot";
 import HallucinationChecker from "./components/HallucinationChecker";
 import HuggingFaceImport from "./components/HuggingFaceImport";
 import { BatchIcon, ChatIcon, CheckerIcon, ImportIcon } from "./components/icons";
-import SyncSeal from "./components/SyncSeal";
 
 type Mode = "chat" | "checker" | "huggingface" | "batch";
 
@@ -29,9 +30,9 @@ export default function Home() {
   return (
     <div data-role="app">
       <nav aria-label="Modes" data-role="sidebar">
+        {/* The Source Sync logo, exported from Canva ("Source Sync logo"); its ink ground matches the rail. */}
         <p data-role="brand">
-          <SyncSeal />
-          <span>Source Sync</span>
+          <Image src={logo} alt="Source Sync" width={192} preload />
         </p>
         <ul>
           {MODES.map(({ id, label, Icon }) => (

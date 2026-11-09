@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Source Sync mark: a crimson seal with two carved brush strokes (the answer and its source, in sync) and a carved frame with one chipped corner. Authored SVG, same artwork as app/components/SyncSeal.tsx. -->
+  <!-- Source Sync mark: a crimson seal with two carved brush strokes (the answer and its source, in sync) and a carved frame with one chipped corner. Authored SVG; the same seal is drawn as vector shapes in the Canva design "Source Sync logo", whose export is app/assets/source-sync-logo.png. -->
   <defs>
     <filter id="ink" x="-6%" y="-6%" width="112%" height="112%">
       <feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="11" result="noise"/>
