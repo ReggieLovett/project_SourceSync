@@ -1,12 +1,12 @@
-# AI Chatbot & RAG Hallucination Checker
+# Source Sync
 
-A local Next.js (App Router) platform with three connected modules:
+Source Sync keeps AI answers in sync with their sources: a RAG chatbot paired with a hallucination checker that verifies every answer claim by claim against its source document, with the exact quote as proof. It is a local Next.js (App Router) platform with three connected modules:
 
 1. **Document Q&A chatbot (the generator).** Upload a PDF or DOCX; it is chunked and embedded into a local ChromaDB collection, and Groq answers questions strictly from the retrieved excerpts. This is the "RAG system under test."
 2. **Verification engine (the checker).** Splits an answer into atomic claims, verifies each against the context (verdict, exact evidence quote, confidence), and scores faithfulness, answer relevance, and context relevance. Healthcare Strictness Mode accepts "Supported" only when the context states the claim literally and confidence is ≥ 0.95.
 3. **Hugging Face importer and batch audits.** Pulls Q/A/context rows from a Hugging Face dataset, embeds the contexts into ChromaDB, runs them (or a local JSON file) through the checker in parallel, and exports a CSV audit report.
 
-The frontend is semantic HTML with one light, Claude-inspired stylesheet, [app/globals.css](app/globals.css): a warm cream page, white rounded panels, serif headings and answers, and a clay accent. The stylesheet targets only elements and the `data-verdict`, `data-status`, and `data-role` hooks, with no classes and no inline styles, so whoever owns the UI design can replace it wholesale. Without it, verdicts still read through content markers (🟢 Supported, 🔴 Contradicted, 🟡 Unsupported).
+The frontend is semantic HTML with one stylesheet, [app/globals.css](app/globals.css), in a modern rendition of Ghost of Tsushima's menu language: a sumi-ink rail beside a washi-grey ground, white paper work surfaces, crisp square controls, Zen Kaku Gothic New for the interface and Shippori Mincho for source text and evidence, crimson for the brand and the current mode, and gold for status on ink. The one signature move is the verdict seal: Supported and Contradicted are solid stamped seals, Unsupported is a hollow one, and they stamp in row by row the first time a check lands. The logo, the **Sync seal** (a crimson seal with two carved brush strokes set like an equals sign: the answer and its source, in sync) beside the SOURCE SYNC wordmark, is designed in Canva (design "Source Sync logo") and shipped as [app/assets/source-sync-logo.png](app/assets/source-sync-logo.png) in the sidebar; the seal alone is the favicon, [app/icon.svg](app/icon.svg). Fonts are self-hosted with `next/font` in `app/layout.tsx` (with `preload: false`, so the browser fetches only the few Latin slices the page uses). The stylesheet targets only elements and the `data-verdict`, `data-status`, `data-role`, and `data-fresh` hooks, with no classes and no inline styles. Without it, verdicts still read through content markers (🟢 Supported, 🔴 Contradicted, 🟡 Unsupported). Design decisions are recorded in `PRODUCT.md` and `DESIGN.md`.
 
 ## Run it
 
@@ -54,7 +54,7 @@ The sidebar switches between four modes, one on screen at a time. Each mode keep
 | Batch processing | `lib/batch.ts`, `app/api/batch-check/route.ts` |
 | CSV audit export (client-safe) | `lib/export.ts` |
 | Shared types, config, HTTP helpers | `lib/types.ts`, `lib/config.ts`, `lib/http.ts`, `lib/errors.ts` |
-| Dashboard (semantic HTML + one stylesheet) | `app/page.tsx`, `app/components/*`, `app/globals.css` |
+| Dashboard (semantic HTML + one stylesheet), logo, icons | `app/page.tsx`, `app/components/*`, `app/globals.css`, `app/icon.svg` |
 
 **Retrieval.** Uploaded text is split into sentence-aware chunks (about 1,000 characters with about 150 characters of overlap). The chunks are embedded with Chroma's `DefaultEmbeddingFunction` from `@chroma-core/default-embed` (all-MiniLM-L6-v2, cosine space) and stored in the `uploaded_documents` collection, tagged with a `documentId`, which is a hash of the extracted text, so re-uploading the same file replaces its chunks. Chat retrieves the top 5 chunks for the latest question and filters them to the active document.
 

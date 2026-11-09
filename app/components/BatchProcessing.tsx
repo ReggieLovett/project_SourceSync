@@ -154,9 +154,10 @@ export default function BatchProcessing({
             <dt>Average context relevance</dt>
             <dd>{formatScore(summary.averageContextRelevance, "/100")}</dd>
             <dt>Claims</dt>
-            <dd>
-              <VerdictLabel verdict="Supported" />: {summary.supportedClaims} · <VerdictLabel verdict="Contradicted" />: {summary.contradictedClaims} ·{" "}
-              <VerdictLabel verdict="Unsupported" />: {summary.unsupportedClaims}
+            <dd data-role="verdict-counts">
+              <span><VerdictLabel verdict="Supported" /> {summary.supportedClaims}</span>{" "}
+              <span><VerdictLabel verdict="Contradicted" /> {summary.contradictedClaims}</span>{" "}
+              <span><VerdictLabel verdict="Unsupported" /> {summary.unsupportedClaims}</span>
             </dd>
             <dt>Items with failed claims</dt>
             <dd>{summary.itemsWithFailedClaims}</dd>
@@ -194,9 +195,9 @@ export default function BatchProcessing({
                       <td>{item.result.metrics.answerRelevance}</td>
                       <td>{item.result.metrics.contextRelevance}</td>
                       <td>
-                        <span aria-hidden="true">🟢</span> {item.result.counts.supported} supported,{" "}
-                        <span aria-hidden="true">🔴</span> {item.result.counts.contradicted} contradicted,{" "}
-                        <span aria-hidden="true">🟡</span> {item.result.counts.unsupported} unsupported
+                        <span aria-hidden="true" data-verdict="Supported">🟢</span> {item.result.counts.supported} supported,{" "}
+                        <span aria-hidden="true" data-verdict="Contradicted">🔴</span> {item.result.counts.contradicted} contradicted,{" "}
+                        <span aria-hidden="true" data-verdict="Unsupported">🟡</span> {item.result.counts.unsupported} unsupported
                       </td>
                       <td>OK</td>
                     </>
