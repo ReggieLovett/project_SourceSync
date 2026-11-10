@@ -44,6 +44,14 @@ export function formatScore(value: number | null, suffix: string): string {
   return value === null ? "N/A" : `${value}${suffix}`;
 }
 
+const dateTimeFormat = new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" });
+
+/** "10 Nov 2026, 09:30" in the viewer's locale; month names avoid day/month ambiguity. */
+export function formatWhen(iso: string): string {
+  const date = new Date(iso);
+  return Number.isNaN(date.getTime()) ? iso : dateTimeFormat.format(date);
+}
+
 export function plural(count: number, noun: string): string {
   return `${count.toLocaleString()} ${noun}${count === 1 ? "" : "s"}`;
 }

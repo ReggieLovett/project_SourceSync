@@ -38,6 +38,22 @@ export function postJson<T>(url: string, body: unknown, signal?: AbortSignal): P
   });
 }
 
+export function putJson<T>(url: string, body: unknown, signal?: AbortSignal): Promise<T> {
+  return apiRequest<T>(url, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    signal,
+  });
+}
+
+/** A new history ID. randomUUID needs a secure context (localhost is one; a LAN IP is not). */
+export function newHistoryId(): string {
+  if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
 export function errorMessage(error: unknown): string {
   if (error instanceof Error && error.name === "AbortError") return "Request cancelled.";
   return error instanceof Error ? error.message : "Something went wrong.";

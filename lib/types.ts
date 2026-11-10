@@ -186,6 +186,56 @@ export type BatchReport = {
   results: BatchItemResult[];
 };
 
+// ---------- History: saved conversations and checks ----------
+
+/** One message as the chat keeps it; assistant turns keep the full response (excerpts, timing). */
+export type ChatEntry =
+  | { role: "user"; content: string }
+  | { role: "assistant"; content: string; response: ChatResponse };
+
+/** The checker inputs exactly as they were submitted. */
+export type CheckInput = {
+  question: string;
+  context: string;
+  answer: string;
+  strictnessMode: boolean;
+};
+
+type HistoryEntryBase = {
+  /** Client-generated (crypto.randomUUID); stable across re-saves of the same item. */
+  id: string;
+  /** Derived on the server from the first question. */
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SavedConversation = HistoryEntryBase & {
+  kind: "conversation";
+  document: UploadedDocument | null;
+  messages: ChatEntry[];
+};
+
+export type SavedCheck = HistoryEntryBase & {
+  kind: "check";
+  input: CheckInput;
+  result: CheckResult;
+};
+
+export type HistoryEntry = SavedConversation | SavedCheck;
+
+/** Body of PUT /api/history/[id]; the server adds the title and timestamps. */
+export type HistorySaveRequest =
+  | { kind: "conversation"; document: UploadedDocument | null; messages: ChatEntry[] }
+  | { kind: "check"; input: CheckInput; result: CheckResult };
+
+/** One row of GET /api/history, newest first. */
+export type HistorySummary =
+  | (HistoryEntryBase & { kind: "conversation"; messageCount: number; fileName: string | null })
+  | (HistoryEntryBase & { kind: "check"; counts: ClaimCounts; faithfulness: number | null; strictnessMode: boolean });
+
+export type HistoryListResponse = { entries: HistorySummary[] };
+
 // ---------- Module 3: Hugging Face importer ----------
 
 export type HfImportRequest = {

@@ -26,7 +26,8 @@ Claim-level verification with evidence: not a single trust score, but each atomi
 
 ## Capabilities and Constraints
 
-- Four modes in one dashboard: Chat, Hallucination checker, Hugging Face import, Batch check. Modes stay mounted, so switching keeps state.
+- Five modes in one dashboard: Chat, Hallucination checker, Hugging Face import, Batch check, History. Modes stay mounted, so switching keeps state.
+- History saves every conversation (after each answer) and every completed check, including pasted ones, as JSON files on the machine running the app (`.data/history/`). Saved items can be reopened or deleted. Batch reports are not saved.
 - Chat works without a file (plain Groq chat) or grounded in one attached PDF/DOCX (up to 20 MB).
 - Checker outputs Faithfulness, Answer Relevance, and Context Relevance, plus a claims table (verdict, confidence, evidence, reasoning, adjustments).
 - Batch check handles up to 50 items and exports a CSV audit report.

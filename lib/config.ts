@@ -51,6 +51,11 @@ export function chromaSettings() {
   };
 }
 
+/** Saved conversations and checks are JSON files in this folder (gitignored). */
+export function historySettings() {
+  return { dir: text("HISTORY_DIR") ?? ".data/history" };
+}
+
 export const LIMITS = {
   uploadBytes: 20 * 1024 * 1024,
   documentCharacters: 2_000_000,
@@ -63,6 +68,10 @@ export const LIMITS = {
   batchConcurrency: { min: 1, max: 5, default: 2 },
   hfRows: { max: 50, default: 10 },
   maxClaims: 40,
+  /** One saved conversation or check, as JSON (a full 60,000-character context fits easily). */
+  historyEntryBytes: 2 * 1024 * 1024,
+  /** Messages kept in one saved conversation (the chat API accepts up to `chatMessages` of history). */
+  historyMessages: 120,
 } as const;
 
 /** Confidence a claim needs in Healthcare (strict) mode to stay "Supported". */

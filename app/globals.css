@@ -820,6 +820,77 @@ article {
   margin-top: 0.5rem;
 }
 
+/* ---------- History ---------- */
+
+/* One paper surface per list; each saved item is a row with its actions on the right. */
+[data-role="history-list"] {
+  margin: 0.5rem 0 1rem;
+  padding: 0;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  box-shadow: var(--lift);
+  list-style: none;
+}
+
+[data-role="history-list"] > li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.3rem 1.5rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+[data-role="history-list"] > li:last-child {
+  border-bottom: 0;
+}
+
+[data-role="history-list"] > li > p {
+  grid-column: 1;
+  max-width: none;
+  margin: 0;
+}
+
+[data-role="history-title"] {
+  overflow-wrap: anywhere;
+  font-weight: 500;
+}
+
+[data-role="history-list"] [data-role="verdict-counts"] {
+  margin-top: 0.4rem;
+}
+
+[data-role="history-list"] > li > [data-role="history-actions"] {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  justify-content: flex-end;
+}
+
+[data-role="history-list"] > li > [role="alert"] {
+  grid-column: 1 / -1;
+  margin-top: 0.5rem;
+}
+
+[data-role="history-actions"] button {
+  min-height: 2.25rem;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.8125rem;
+}
+
+/* Destructive confirmation: crimson is reserved for errors and Contradicted, and this is the error-adjacent case. */
+button[data-role="danger"] {
+  border-color: var(--crimson);
+  color: var(--crimson-deep);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  button[data-role="danger"]:hover:not(:disabled) {
+    border-color: var(--crimson);
+    background: var(--crimson);
+    color: var(--paper);
+  }
+}
+
 /* ---------- Chat ---------- */
 
 section[data-mode="chat"] {
@@ -1216,6 +1287,18 @@ section[data-mode="chat"] {
 
   dd {
     margin-bottom: 0.6rem;
+  }
+
+  [data-role="history-list"] > li {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 1rem;
+  }
+
+  [data-role="history-list"] > li > [data-role="history-actions"] {
+    grid-column: 1;
+    grid-row: auto;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
   }
 
   /* Scroll wide tables sideways instead of crushing every column to one word. */

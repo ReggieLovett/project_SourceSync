@@ -1,10 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { apiRequest, errorMessage, postJson } from "../../lib/api-client";
+import { apiRequest, errorMessage, newHistoryId, postJson, putJson } from "../../lib/api-client";
 import { LIMITS } from "../../lib/config";
-import type { CheckRequest, CheckResult, ExtractedDocument } from "../../lib/types";
-import { CheckResultView, plural, VerdictLegend } from "./CheckResultView";
+import type {
+  CheckRequest,
+  CheckResult,
+  ExtractedDocument,
+  HistoryEntry,
+  HistorySaveRequest,
+  SavedCheck,
+} from "../../lib/types";
+import { CheckResultView, formatWhen, plural, VerdictLegend } from "./CheckResultView";
 import type { CheckerDraft } from "./DocumentChatbot";
 import { useElapsedSeconds, useRequest } from "./hooks";
 
@@ -23,14 +30,29 @@ const EXAMPLE: CheckerDraft = {
     "The trial was funded by the National Institutes of Health.",
 };
 
-/** `draft` changes when "Send to checker" is clicked in the chat. */
-export default function HallucinationChecker({ hidden, draft }: { hidden: boolean; draft: CheckerDraft | null }) {
+/**
+ * `draft` changes when "Send to checker" is clicked in the chat; `restore` changes
+ * when a saved check is opened from History.
+ */
+export default function HallucinationChecker({
+  hidden,
+  draft,
+  restore,
+}: {
+  hidden: boolean;
+  draft: CheckerDraft | null;
+  restore: SavedCheck | null;
+}) {
   const [form, setForm] = useState<CheckerDraft>(EMPTY);
   const [strictnessMode, setStrictnessMode] = useState(false);
   const [result, setResult] = useState<CheckResult | null>(null);
   const [error, setError] = useState("");
   const [fileNote, setFileNote] = useState("");
   const [fileError, setFileError] = useState("");
+  // What History knows about the result on screen.
+  const [history, setHistory] = useState<
+    { state: "none" } | { state: "saved" } | { state: "opened"; savedAt: string } | { state: "error"; message: string }
+  >({ state: "none" });
   const request = useRequest();
   const extract = useRequest();
   const seconds = useElapsedSeconds(request.busy);
@@ -44,7 +66,30 @@ export default function HallucinationChecker({ hidden, draft }: { hidden: boolea
     setResult(null);
     setError("");
     setFileNote("");
+    setHistory({ state: "none" });
   }, [draft, cancel]);
+
+  useEffect(() => {
+    if (!restore) return;
+    cancel();
+    setForm({ question: restore.input.question, context: restore.input.context, answer: restore.input.answer });
+    setStrictnessMode(restore.input.strictnessMode);
+    setResult(restore.result);
+    setError("");
+    setFileNote("");
+    setFileError("");
+    setHistory({ state: "opened", savedAt: restore.createdAt });
+  }, [restore, cancel]);
+
+  /** Every completed check becomes its own History entry. */
+  async function saveCheck(input: HistorySaveRequest & { kind: "check" }) {
+    try {
+      await putJson<HistoryEntry>(`/api/history/${newHistoryId()}`, input);
+      setHistory({ state: "saved" });
+    } catch (failure) {
+      setHistory({ state: "error", message: errorMessage(failure) });
+    }
+  }
 
   function update(field: keyof CheckerDraft, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -53,6 +98,7 @@ export default function HallucinationChecker({ hidden, draft }: { hidden: boolea
   function reset(next: CheckerDraft) {
     setForm(next);
     setResult(null);
+    setHistory({ state: "none" });
     setError("");
     setFileNote("");
     setFileError("");
@@ -86,7 +132,10 @@ export default function HallucinationChecker({ hidden, draft }: { hidden: boolea
     setResult(null);
     try {
       const body: CheckRequest = { ...form, strictnessMode };
-      setResult(await request.run((signal) => postJson<CheckResult>("/api/check", body, signal)));
+      setHistory({ state: "none" });
+      const checked = await request.run((signal) => postJson<CheckResult>("/api/check", body, signal));
+      setResult(checked);
+      void saveCheck({ kind: "check", input: { ...form, strictnessMode }, result: checked });
     } catch (failure) {
       setError(errorMessage(failure));
     }
@@ -152,6 +201,11 @@ export default function HallucinationChecker({ hidden, draft }: { hidden: boolea
         <p role="status">Extracting claims, verifying each against the context, and scoring relevance… {seconds} s</p>
       ) : null}
       {error ? <p role="alert">Check failed: {error}</p> : null}
+      {history.state === "saved" ? <p data-role="note">Saved to History.</p> : null}
+      {history.state === "opened" ? (
+        <p data-role="note">Opened from History (checked {formatWhen(history.savedAt)}).</p>
+      ) : null}
+      {history.state === "error" ? <p role="alert">Couldn&apos;t save this check to History: {history.message}</p> : null}
       <VerdictLegend />
       {result ? <CheckResultView result={result} /> : null}
     </section>

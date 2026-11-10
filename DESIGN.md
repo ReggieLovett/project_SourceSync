@@ -277,6 +277,7 @@ Crisp, standard, typographic.
 - **Hover / Focus:** secondary borders darken to ink; primary deepens to warm charcoal. Focus is a 2px crimson outline at 2px offset (gold on ink surfaces). Press scales to 0.97 over 160ms; disabled drops to 0.42 opacity.
 - **Small in-context actions** (in the chat log, attachment chip, composer hint): min height 2.25rem, tighter padding.
 - **File picker:** the native selector button is restyled as a secondary button at 0.75rem.
+- **Danger (confirm delete):** secondary shape with a crimson border and deep crimson label; hover fills crimson. Only appears after a first Delete click, beside **Keep**.
 
 ### Cards / Containers
 - **Corner Style:** square.
@@ -292,9 +293,9 @@ Crisp, standard, typographic.
 - **Error:** alerts are a crimson-wash panel with a faint crimson border and deep crimson text.
 
 ### Navigation
-- **Rail:** ink column with the brand (40px seal plus "SOURCE SYNC" wordmark at 0.2em tracking), four mode buttons with authored 24px-grid line icons (1.6 stroke, square caps, mitred joins), and a stack list at the foot behind an on-ink hairline.
+- **Rail:** ink column with the brand (the seal-and-wordmark logo image exported from Canva, 2.55rem tall, on the rail's own #111110 ink), five mode buttons with authored 24px-grid line icons (1.6 stroke, square caps, mitred joins), and a stack list at the foot behind an on-ink hairline.
 - **States:** inactive modes are soft rice-paper text on transparent; hover adds a faint light wash; the current mode is a pale washi block with ink bold text and a crimson square dot that scales in over 220ms. Focus inside the rail is a gold outline inset by 2px.
-- **Mobile:** a horizontal, scrolling ink tab bar at the top.
+- **Mobile:** a horizontal, scrolling ink tab bar at the top; the current tab scrolls into view whenever the mode changes.
 
 ### Chat
 - **Messages:** user messages are ink blocks aligned right (max 80%) with a gold speaker label; assistant answers are paper surfaces with the paper lift, preceded by an uppercase speaker label. New messages ease in 5px over 220ms.
@@ -302,6 +303,11 @@ Crisp, standard, typographic.
 - **Attachment chip:** paper, strong hairline, crimson square marker, small Remove action.
 - **Empty state:** the faint seal watermark (5.5rem) above an uppercase first step.
 - **Dropzone:** a 90% ink overlay with a dashed inset outline and uppercase prompt.
+
+### History rows
+- **List:** one paper surface per section (Conversations, Checks) with the paper lift; rows divided by 1px hairlines, 1rem by 1.25rem padding.
+- **Row:** title (first question) in Body at 500 weight, a Caption meta line (date, message count and document, or faithfulness and mode), and for checks the seal-and-count row. **Open** and **Delete** sit on the right as small secondary buttons; under 48rem they move below the text.
+- **Empty state:** a soft sentence per section saying when items appear.
 
 ### Verdict Seals (signature)
 The proof made visible. Each claim's verdict is a stamped seal set beside its verbatim quote.

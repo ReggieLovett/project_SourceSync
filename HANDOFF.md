@@ -36,6 +36,13 @@ Updated 2026-11-01. The project was rebuilt into the "AI Chatbot & RAG Hallucina
 - The checker has an "Upload file for context" button at the top, backed by the new `POST /api/extract`, which extracts text without storing it.
 - Verified in the browser: plain chat, drag-and-drop attach, document chat, Send to checker (switches mode), upload for context, and the HF → Batch hand-off, at desktop and phone width. Typecheck, 43 tests, and the build pass.
 
+## Follow-up, 2026-11-10: History
+
+- New **History** mode. Chat saves the whole conversation after every answer (one entry per conversation, updated in place; **New chat** starts a new one). The checker saves each completed check, pasted or sent from chat, as its own entry. History lists both, newest first, and can reopen or delete them.
+- Storage is one JSON file per item in `HISTORY_DIR` (default `.data/history/`, gitignored), written atomically. `lib/history.ts` validates every save with zod; routes are `app/api/history/route.ts` and `app/api/history/[id]/route.ts`.
+- Saves from one chat tab are queued, because in testing two quick answers raced (the first save waited on dev-mode route compilation) and an older copy could have landed last.
+- Verified with 11 new tests (54 total), typecheck, build, and in the browser at 1280x800 and 375px with stubbed chat/check responses: autosave, reopen into Chat and the checker, delete with confirmation, and the forced save race.
+
 ## Known limitations
 
 - **Healthcare Mode** still relies on LLM judgments. The literal-match flag made the gate effective in testing, but the flag and verdicts can still be wrong, so treat results as an audit aid, not clinical validation.

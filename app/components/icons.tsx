@@ -60,6 +60,16 @@ export function BatchIcon(props: IconProps) {
   );
 }
 
+/** A clock face: past conversations and checks. */
+export function HistoryIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 7.5V12l3 2" />
+    </Icon>
+  );
+}
+
 export function AttachIcon(props: IconProps) {
   return (
     <Icon {...props}>
