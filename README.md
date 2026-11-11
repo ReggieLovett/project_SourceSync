@@ -10,6 +10,8 @@ The frontend is semantic HTML with one stylesheet, [app/globals.css](app/globals
 
 ## Run it
 
+To put it online on Vercel with Chroma Cloud, see [DEPLOY.md](DEPLOY.md). To run it on your own computer:
+
 Requirements: Node.js 22+ and a Groq API key. The internet is needed for Groq, Hugging Face, and the first download of the embedding model.
 
 ```bash
@@ -170,6 +172,9 @@ The dashboard saves with `PUT /api/history/<id>`, where `<id>` is a client-gener
 | `CHROMA_HF_COLLECTION` | `hf_test_contexts` | Imported Hugging Face contexts |
 | `HF_TOKEN` | (empty) | Token for gated or private datasets |
 | `HISTORY_DIR` | `.data/history` | Folder for saved conversations and checks (gitignored) |
+| `CHROMA_API_KEY`, `CHROMA_TENANT`, `CHROMA_DATABASE` | (empty) | Use Chroma Cloud and its hosted embeddings instead of local Chroma (see DEPLOY.md) |
+| `SITE_PASSWORD` | (empty) | Password for every page and API route; required on Vercel |
+| `BLOB_READ_WRITE_TOKEN` | (set by Vercel) | Stores History in a private Vercel Blob store instead of files |
 
 **Models.** Groq retired `llama-3.1-70b-versatile` (and Llama 3.3 70B is also no longer offered to this key), so the default is `openai/gpt-oss-120b`, which gets Groq's strict JSON-schema decoding. Other models fall back to JSON mode, with the schema in the prompt plus zod validation.
 

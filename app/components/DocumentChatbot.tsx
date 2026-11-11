@@ -19,6 +19,7 @@ import { useElapsedSeconds, useRequest } from "./hooks";
 export type CheckerDraft = { question: string; context: string; answer: string };
 
 const ACCEPTED_TYPES = ".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+const UPLOAD_MB = LIMITS.uploadBytes / 1024 / 1024;
 
 /** `restore` changes when a saved conversation is opened from History. */
 export default function DocumentChatbot({
@@ -105,6 +106,12 @@ export default function DocumentChatbot({
   async function attach(file: File | undefined) {
     if (!file) return;
     setUploadError("");
+    // Checked here too: on Vercel an oversized body is rejected before it reaches the server.
+    if (file.size > LIMITS.uploadBytes) {
+      setUploadError(`${file.name} is larger than ${UPLOAD_MB} MB. Use a smaller PDF or DOCX.`);
+      if (fileInput.current) fileInput.current.value = "";
+      return;
+    }
     const form = new FormData();
     form.append("file", file);
     try {
@@ -292,7 +299,7 @@ export default function DocumentChatbot({
         </form>
         <p data-role="composer-hint">
           <small>
-            <kbd>Enter</kbd> to send · <kbd>Shift</kbd> + <kbd>Enter</kbd> for a new line · PDF or DOCX, up to 20 MB
+            <kbd>Enter</kbd> to send · <kbd>Shift</kbd> + <kbd>Enter</kbd> for a new line · PDF or DOCX, up to {UPLOAD_MB} MB
             {saveState === "saved" ? " · Saved to History" : ""}
           </small>{" "}
           {messages.length > 0 ? (

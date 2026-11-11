@@ -43,6 +43,13 @@ Updated 2026-11-01. The project was rebuilt into the "AI Chatbot & RAG Hallucina
 - Saves from one chat tab are queued, because in testing two quick answers raced (the first save waited on dev-mode route compilation) and an older copy could have landed last.
 - Verified with 11 new tests (54 total), typecheck, build, and in the browser at 1280x800 and 375px with stubbed chat/check responses: autosave, reopen into Chat and the checker, delete with confirmation, and the forced save race.
 
+## Follow-up, 2026-11-11: Vercel deployment support
+
+- The app now runs on Vercel without code changes, configured by environment variables. `DEPLOY.md` has the step-by-step guide, costs, and troubleshooting.
+- `CHROMA_API_KEY` (+ `CHROMA_TENANT`, `CHROMA_DATABASE`) switches to Chroma Cloud with its hosted Qwen embeddings (`@chroma-core/chroma-cloud-qwen` 0.1.12). History uses a private Vercel Blob store when `BLOB_READ_WRITE_TOKEN` is set (`@vercel/blob` 2.8.2, pinned). `proxy.ts` adds a site password (`SITE_PASSWORD`, required on Vercel). Batch `maxDuration` is now 300 s (Hobby maximum). Hosted uploads are capped at 4 MB, checked in the browser.
+- `next.config.mjs` excludes the ~350 MB ONNX embedding stack from deployments and explicitly includes `chromadb` and the Qwen package (both loaded via `webpackIgnore`). Chroma routes trace to about 93 MB (limit 250 MB).
+- Verified: 63 tests (9 new), typecheck, build, and a temporary standalone build run with fake credentials: password prompt, packaged `chromadb` and Qwen loading, Chroma Cloud reached and its rejection mapped, and each missing-configuration message. Local dev mode is unchanged. Not yet verified: a real Vercel deployment with real Chroma Cloud and Blob credentials.
+
 ## Known limitations
 
 - **Healthcare Mode** still relies on LLM judgments. The literal-match flag made the gate effective in testing, but the flag and verdicts can still be wrong, so treat results as an audit aid, not clinical validation.

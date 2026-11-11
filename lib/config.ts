@@ -42,22 +42,61 @@ function collectionName(name: string, fallback: string): string {
   return value;
 }
 
-export function chromaSettings() {
-  return {
-    host: text("CHROMA_HOST") ?? "localhost",
-    port: integer("CHROMA_PORT", 8000, 1, 65_535),
+/**
+ * True on Vercel. NEXT_PUBLIC_VERCEL_ENV is set by Vercel for Next.js builds and is
+ * inlined into the browser bundle; VERCEL covers the server at runtime.
+ */
+export function isHosted(): boolean {
+  return Boolean(process.env.NEXT_PUBLIC_VERCEL_ENV || process.env.VERCEL);
+}
+
+export type ChromaSettings =
+  | { mode: "local"; host: string; port: number; documentsCollection: string; hfCollection: string }
+  | { mode: "cloud"; apiKey: string; tenant: string; database: string; documentsCollection: string; hfCollection: string };
+
+/**
+ * Local Chroma (npm run chroma:start) unless CHROMA_API_KEY is set, which switches to
+ * Chroma Cloud. Cloud mode also embeds with Chroma Cloud's hosted Qwen model, so the
+ * deployment never loads the local ONNX embedding stack.
+ */
+export function chromaSettings(): ChromaSettings {
+  const collections = {
     documentsCollection: collectionName("CHROMA_DOCUMENTS_COLLECTION", "uploaded_documents"),
     hfCollection: collectionName("CHROMA_HF_COLLECTION", "hf_test_contexts"),
   };
+  const apiKey = text("CHROMA_API_KEY");
+  if (apiKey) {
+    const tenant = text("CHROMA_TENANT");
+    const database = text("CHROMA_DATABASE");
+    if (!tenant || !database) {
+      throw new AppError(500, "INVALID_CONFIGURATION", "Chroma Cloud needs CHROMA_TENANT and CHROMA_DATABASE as well as CHROMA_API_KEY. All three are shown in the Chroma Cloud dashboard.");
+    }
+    return { mode: "cloud", apiKey, tenant, database, ...collections };
+  }
+  if (isHosted()) {
+    throw new AppError(503, "CHROMA_NOT_CONFIGURED", "This deployment has no Chroma database. Set CHROMA_API_KEY, CHROMA_TENANT, and CHROMA_DATABASE in the Vercel project's environment variables, then redeploy.");
+  }
+  return { mode: "local", host: text("CHROMA_HOST") ?? "localhost", port: integer("CHROMA_PORT", 8000, 1, 65_535), ...collections };
 }
 
-/** Saved conversations and checks are JSON files in this folder (gitignored). */
-export function historySettings() {
-  return { dir: text("HISTORY_DIR") ?? ".data/history" };
+/**
+ * Saved conversations and checks: Vercel Blob when a store is connected to the
+ * deployment (it sets BLOB_READ_WRITE_TOKEN), otherwise JSON files in HISTORY_DIR.
+ * Vercel's own disk is read-only and temporary, so hosted History needs Blob.
+ */
+export function historySettings():
+  | { backend: "files"; dir: string }
+  | { backend: "blob"; prefix: string } {
+  if (text("BLOB_READ_WRITE_TOKEN") || text("BLOB_STORE_ID")) return { backend: "blob", prefix: "history/" };
+  if (isHosted()) {
+    throw new AppError(503, "HISTORY_NOT_CONFIGURED", "History needs a Vercel Blob store on this deployment. In Vercel, open Storage, create a private Blob store, connect it to this project, and redeploy.");
+  }
+  return { backend: "files", dir: text("HISTORY_DIR") ?? ".data/history" };
 }
 
 export const LIMITS = {
-  uploadBytes: 20 * 1024 * 1024,
+  /** Vercel rejects request bodies over 4.5 MB on every plan, so hosted uploads stop at 4 MB. */
+  uploadBytes: (isHosted() ? 4 : 20) * 1024 * 1024,
   documentCharacters: 2_000_000,
   questionCharacters: 4_000,
   answerCharacters: 20_000,

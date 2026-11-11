@@ -12,9 +12,11 @@
     "chroma:install": "node scripts/install-chroma.mjs"
   },
   "dependencies": {
+    "@chroma-core/chroma-cloud-qwen": "0.1.12",
     "@chroma-core/default-embed": "^0.1.9",
     "@huggingface/transformers": "^3.8.1",
     "@next/env": "^16.4.3",
+    "@vercel/blob": "2.8.2",
     "chromadb": "^3.5.0",
     "groq-sdk": "^1.6.0",
     "mammoth": "^1.13.0",

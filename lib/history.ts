@@ -1,5 +1,6 @@
-// Saved conversations and checks: one JSON file per entry in HISTORY_DIR
-// (default .data/history). Server-only; the dashboard reaches it through /api/history.
+// Saved conversations and checks: one JSON document per entry, stored as files in
+// HISTORY_DIR (default .data/history) or, on Vercel, as private blobs in Vercel Blob.
+// Server-only; the dashboard reaches it through /api/history.
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -122,19 +123,6 @@ export function assertHistoryId(id: string): void {
   }
 }
 
-function historyDir(): string {
-  return path.resolve(historySettings().dir);
-}
-
-function entryFile(id: string): string {
-  assertHistoryId(id);
-  return path.join(historyDir(), `${id}.json`);
-}
-
-function isMissing(error: unknown): boolean {
-  return (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
-}
-
 function notFound(): AppError {
   return new AppError(404, "HISTORY_NOT_FOUND", "That saved item no longer exists. It may have been deleted.");
 }
@@ -146,20 +134,178 @@ export function historyTitle(text: string): string {
   return line.length > TITLE_LENGTH ? `${line.slice(0, TITLE_LENGTH - 1).trimEnd()}…` : line;
 }
 
-async function readEntry(file: string): Promise<HistoryEntry | null> {
-  try {
-    return JSON.parse(await readFile(file, "utf8")) as HistoryEntry;
-  } catch (error) {
-    if (isMissing(error)) return null;
-    throw error;
+/** Where saved items live: JSON files on this computer, or private blobs in Vercel Blob. */
+export interface HistoryStore {
+  read(id: string): Promise<HistoryEntry | null>;
+  write(entry: HistoryEntry): Promise<void>;
+  /** False when there was nothing to delete. */
+  remove(id: string): Promise<boolean>;
+  /** Every readable entry; unreadable ones are skipped with a warning, not fatal. */
+  readAll(): Promise<HistoryEntry[]>;
+}
+
+function isMissing(error: unknown): boolean {
+  return (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
+}
+
+function skipUnreadable(name: string, error: unknown): void {
+  console.warn(`[history] skipping unreadable ${name}:`, error instanceof Error ? error.message : error);
+}
+
+/** One `<id>.json` file per entry in `dir`; writes go beside the target and are renamed into place. */
+export function fileHistoryStore(dir: string): HistoryStore {
+  const fileFor = (id: string) => path.join(dir, `${id}.json`);
+  async function readFileEntry(file: string): Promise<HistoryEntry | null> {
+    try {
+      return JSON.parse(await readFile(file, "utf8")) as HistoryEntry;
+    } catch (error) {
+      if (isMissing(error)) return null;
+      throw error;
+    }
+  }
+  return {
+    read: (id) => readFileEntry(fileFor(id)),
+    async write(entry) {
+      await mkdir(dir, { recursive: true });
+      // A crash mid-write leaves only the temporary file, never a half-written entry.
+      const temporary = `${fileFor(entry.id)}.${randomUUID()}.tmp`;
+      await writeFile(temporary, JSON.stringify(entry), "utf8");
+      await rename(temporary, fileFor(entry.id));
+    },
+    async remove(id) {
+      try {
+        await rm(fileFor(id));
+        return true;
+      } catch (error) {
+        if (isMissing(error)) return false;
+        throw error;
+      }
+    },
+    async readAll() {
+      let names: string[];
+      try {
+        names = await readdir(dir);
+      } catch (error) {
+        if (isMissing(error)) return [];
+        throw error;
+      }
+      const entries: HistoryEntry[] = [];
+      for (const name of names) {
+        if (!name.endsWith(".json") || !HISTORY_ID_PATTERN.test(name.slice(0, -5))) continue;
+        try {
+          const entry = await readFileEntry(path.join(dir, name));
+          if (entry) entries.push(entry);
+        } catch (error) {
+          skipUnreadable(name, error);
+        }
+      }
+      return entries;
+    },
+  };
+}
+
+/** The part of @vercel/blob this store uses; tests pass an in-memory stand-in. */
+export type BlobApi = Pick<typeof import("@vercel/blob"), "put" | "get" | "list" | "del">;
+
+const BLOB_READ_CONCURRENCY = 6;
+
+/** Turn Vercel Blob failures into messages that say what to do in the Vercel dashboard. */
+function blobError(error: unknown): AppError {
+  if (error instanceof AppError) return error;
+  switch ((error as Error | null)?.constructor?.name) {
+    case "BlobStoreSuspendedError":
+      return new AppError(503, "HISTORY_STORE_SUSPENDED", "Vercel has paused this Blob store, usually because the free plan's monthly limit was reached. History will work again when the limit resets.");
+    case "BlobStoreNotFoundError":
+    case "BlobAccessError":
+      return new AppError(503, "HISTORY_STORE_UNAVAILABLE", "Vercel could not open the Blob store for History. Check that a private Blob store is connected to this project, then redeploy.");
+    case "BlobServiceRateLimited":
+    case "BlobServiceNotAvailable":
+      return new AppError(503, "HISTORY_STORE_BUSY", "Vercel Blob is busy. Retry in a moment.");
+    default:
+      console.error("[history] Vercel Blob error", error);
+      return new AppError(503, "HISTORY_STORE_ERROR", "Saving or loading History in Vercel Blob failed. Check the Vercel function logs.");
   }
 }
 
+/**
+ * One private blob per entry at `<prefix><id>.json`. Reads skip the CDN cache
+ * (`useCache: false`) because conversations are overwritten in place as they grow.
+ */
+export function blobHistoryStore(prefix: string, loadApi: () => Promise<BlobApi> = () => import("@vercel/blob")): HistoryStore {
+  const pathFor = (id: string) => `${prefix}${id}.json`;
+  async function guarded<T>(task: (api: BlobApi) => Promise<T>): Promise<T> {
+    try {
+      return await task(await loadApi());
+    } catch (error) {
+      throw blobError(error);
+    }
+  }
+  async function readBlob(api: BlobApi, pathname: string): Promise<HistoryEntry | null> {
+    const result = await api.get(pathname, { access: "private", useCache: false });
+    if (!result || result.statusCode !== 200 || !result.stream) return null;
+    return JSON.parse(await new Response(result.stream).text()) as HistoryEntry;
+  }
+  async function pathnames(api: BlobApi): Promise<string[]> {
+    const found: string[] = [];
+    let cursor: string | undefined;
+    do {
+      const page = await api.list({ prefix, cursor, limit: 1000 });
+      found.push(...page.blobs.map((blob) => blob.pathname));
+      cursor = page.hasMore ? page.cursor : undefined;
+    } while (cursor);
+    return found.filter((pathname) => {
+      const name = pathname.slice(prefix.length);
+      return name.endsWith(".json") && HISTORY_ID_PATTERN.test(name.slice(0, -5));
+    });
+  }
+  return {
+    read: (id) => guarded((api) => readBlob(api, pathFor(id))),
+    write: (entry) => guarded(async (api) => {
+      await api.put(pathFor(entry.id), JSON.stringify(entry), {
+        access: "private",
+        addRandomSuffix: false,
+        allowOverwrite: true,
+        contentType: "application/json",
+      });
+    }),
+    remove: (id) => guarded(async (api) => {
+      const target = pathFor(id);
+      if (!(await pathnames(api)).includes(target)) return false;
+      await api.del(target);
+      return true;
+    }),
+    readAll: () => guarded(async (api) => {
+      const queue = await pathnames(api);
+      const entries: HistoryEntry[] = [];
+      const worker = async () => {
+        for (let next = queue.shift(); next !== undefined; next = queue.shift()) {
+          try {
+            const entry = await readBlob(api, next);
+            if (entry) entries.push(entry);
+          } catch (error) {
+            skipUnreadable(next, error);
+          }
+        }
+      };
+      await Promise.all(Array.from({ length: BLOB_READ_CONCURRENCY }, worker));
+      return entries;
+    }),
+  };
+}
+
+/** The store this deployment is configured for (see historySettings). */
+export function historyStore(): HistoryStore {
+  const settings = historySettings();
+  return settings.backend === "blob" ? blobHistoryStore(settings.prefix) : fileHistoryStore(path.resolve(settings.dir));
+}
+
+// ---------- Operations ----------
+
 /** Create or replace a saved item. Keeps the original createdAt when the item already exists. */
-export async function saveHistoryEntry(id: string, body: unknown): Promise<HistoryEntry> {
-  const file = entryFile(id);
+export async function saveHistoryEntry(id: string, body: unknown, store: HistoryStore = historyStore()): Promise<HistoryEntry> {
+  assertHistoryId(id);
   const input = historySaveSchema.parse(body);
-  const existing = await readEntry(file);
+  const existing = await store.read(id);
   if (existing && existing.kind !== input.kind) {
     throw new AppError(409, "HISTORY_KIND_MISMATCH", `That ID already holds a saved ${existing.kind}.`);
   }
@@ -179,28 +325,20 @@ export async function saveHistoryEntry(id: string, body: unknown): Promise<Histo
       input: input.input, result: input.result,
     } satisfies SavedCheck;
   }
-
-  // Write beside the target and rename, so a crash never leaves a half-written entry.
-  await mkdir(path.dirname(file), { recursive: true });
-  const temporary = `${file}.${randomUUID()}.tmp`;
-  await writeFile(temporary, JSON.stringify(entry), "utf8");
-  await rename(temporary, file);
+  await store.write(entry);
   return entry;
 }
 
-export async function getHistoryEntry(id: string): Promise<HistoryEntry> {
-  const entry = await readEntry(entryFile(id));
+export async function getHistoryEntry(id: string, store: HistoryStore = historyStore()): Promise<HistoryEntry> {
+  assertHistoryId(id);
+  const entry = await store.read(id);
   if (!entry) throw notFound();
   return entry;
 }
 
-export async function deleteHistoryEntry(id: string): Promise<void> {
-  try {
-    await rm(entryFile(id));
-  } catch (error) {
-    if (isMissing(error)) throw notFound();
-    throw error;
-  }
+export async function deleteHistoryEntry(id: string, store: HistoryStore = historyStore()): Promise<void> {
+  assertHistoryId(id);
+  if (!(await store.remove(id))) throw notFound();
 }
 
 export function summarizeHistoryEntry(entry: HistoryEntry): HistorySummary {
@@ -216,24 +354,8 @@ export function summarizeHistoryEntry(entry: HistoryEntry): HistorySummary {
       };
 }
 
-/** Every saved item, most recently updated first. Unreadable files are skipped, not fatal. */
-export async function listHistory(): Promise<HistorySummary[]> {
-  let names: string[];
-  try {
-    names = await readdir(historyDir());
-  } catch (error) {
-    if (isMissing(error)) return [];
-    throw error;
-  }
-  const summaries: HistorySummary[] = [];
-  for (const name of names) {
-    if (!name.endsWith(".json") || !HISTORY_ID_PATTERN.test(name.slice(0, -5))) continue;
-    try {
-      const entry = await readEntry(path.join(historyDir(), name));
-      if (entry) summaries.push(summarizeHistoryEntry(entry));
-    } catch (error) {
-      console.warn(`[history] skipping unreadable ${name}:`, error instanceof Error ? error.message : error);
-    }
-  }
-  return summaries.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+/** Every saved item, most recently updated first. */
+export async function listHistory(store: HistoryStore = historyStore()): Promise<HistorySummary[]> {
+  const entries = await store.readAll();
+  return entries.map(summarizeHistoryEntry).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
 }

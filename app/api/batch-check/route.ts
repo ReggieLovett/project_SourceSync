@@ -1,7 +1,8 @@
 import { runBatchCheck } from "../../../lib/batch";
 import { errorResponse, readJson } from "../../../lib/http";
 
-export const maxDuration = 800;
+// Vercel's free (Hobby) plan allows at most 300 s per request; Pro allows 800.
+export const maxDuration = 300;
 
 /**
  * { items: [{ id?, question, answer, context }], strictnessMode?, concurrency? }

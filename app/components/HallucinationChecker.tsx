@@ -107,6 +107,12 @@ export default function HallucinationChecker({
   async function loadContextFile(file: File | undefined) {
     if (!file) return;
     setFileError("");
+    // Checked here too: on Vercel an oversized body is rejected before it reaches the server.
+    if (file.size > LIMITS.uploadBytes) {
+      setFileError(`${file.name} is larger than ${LIMITS.uploadBytes / 1024 / 1024} MB. Use a smaller PDF or DOCX.`);
+      if (fileInput.current) fileInput.current.value = "";
+      return;
+    }
     const body = new FormData();
     body.append("file", file);
     try {
