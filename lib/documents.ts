@@ -1,7 +1,7 @@
 import mammoth from "mammoth";
 import { chunkText, normalizeText, stableHash } from "./chunking";
-import { deleteRecords, queryCollection, upsertRecords } from "./chroma";
-import { chromaSettings, LIMITS } from "./config";
+import { collectionNames, LIMITS } from "./config";
+import { deleteRecords, queryCollection, upsertRecords, waitUntilSearchable } from "./vector-store";
 import { AppError } from "./errors";
 import type { RetrievedChunk, UploadedDocument } from "./types";
 
@@ -105,14 +105,14 @@ export function safeFileName(name: string): string {
   return base.replace(/[\u0000-\u001f]/g, "").slice(0, 200);
 }
 
-/** Parse, chunk, embed (Chroma default embeddings), and store a document. */
+/** Parse, chunk, embed, and store a document in the vector database (local Chroma or Pinecone). */
 export async function ingestDocument(fileName: string, bytes: Uint8Array, signal?: AbortSignal): Promise<UploadedDocument> {
   const name = safeFileName(fileName);
   const parsed = await extractDocumentText(name, bytes);
   // Identical text gets the same ID, so re-uploading a file replaces its chunks.
   const documentId = `doc_${stableHash(parsed.text, 16)}`;
   const chunks = chunkText(parsed.text);
-  const { documentsCollection } = chromaSettings();
+  const { documentsCollection } = collectionNames();
   const uploadedAt = new Date().toISOString();
 
   await deleteRecords(documentsCollection, { documentId }, signal);
@@ -121,6 +121,8 @@ export async function ingestDocument(fileName: string, bytes: Uint8Array, signal
     document: chunk,
     metadata: { documentId, fileName: name, fileType: parsed.fileType, chunkIndex, chunkCount: chunks.length, uploadedAt },
   })), signal);
+  // Pinecone needs a moment before new chunks are searchable; Chroma returns at once.
+  await waitUntilSearchable(documentsCollection, { documentId }, chunks[0], signal);
 
   return {
     documentId,
@@ -141,10 +143,10 @@ export async function retrieveChunks(
   topK: number,
   signal?: AbortSignal,
 ): Promise<{ fileName: string; chunks: RetrievedChunk[] }> {
-  const { documentsCollection } = chromaSettings();
+  const { documentsCollection } = collectionNames();
   const matches = await queryCollection(documentsCollection, question, { nResults: topK, where: { documentId } }, signal);
   if (matches.length === 0) {
-    throw new AppError(404, "DOCUMENT_NOT_FOUND", "This document is not in ChromaDB (it may have been deleted). Upload it again.");
+    throw new AppError(404, "DOCUMENT_NOT_FOUND", "This document is not in the vector database (it may have been deleted). Upload it again.");
   }
   return {
     fileName: String(matches[0].metadata.fileName ?? "document"),

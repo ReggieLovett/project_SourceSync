@@ -247,7 +247,7 @@ export type HfImportRequest = {
   questionField?: string;
   answerField?: string;
   contextField?: string;
-  /** Embed the fetched contexts into Chroma (default true). */
+  /** Embed the fetched contexts into the vector database (default true). */
   embed?: boolean;
 };
 

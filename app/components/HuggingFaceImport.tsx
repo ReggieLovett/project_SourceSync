@@ -15,9 +15,12 @@ function text(form: FormData, name: string): string | undefined {
 
 export default function HuggingFaceImport({
   hidden,
+  vectorDb,
   onUseInBatch,
 }: {
   hidden: boolean;
+  /** "Pinecone" or "ChromaDB": where imported contexts are embedded. */
+  vectorDb: string;
   onUseInBatch: (loaded: LoadedItems) => void;
 }) {
   const [result, setResult] = useState<HfImportResponse | null>(null);
@@ -52,7 +55,7 @@ export default function HuggingFaceImport({
       <header>
         <h1 id="hf-heading">Hugging Face import</h1>
         <p>
-          Pull question/answer/context rows from a Hugging Face dataset. Their contexts are embedded into ChromaDB,
+          Pull question/answer/context rows from a Hugging Face dataset. Their contexts are embedded into the vector database ({vectorDb}),
           and the rows can then be checked in Batch check.
         </p>
       </header>
@@ -86,7 +89,7 @@ export default function HuggingFaceImport({
             </p>
             <p>
               <label>
-                <input name="embed" type="checkbox" defaultChecked /> Embed contexts into ChromaDB (Chroma default embeddings)
+                <input name="embed" type="checkbox" defaultChecked /> Embed contexts into {vectorDb}
               </label>
             </p>
           </details>
@@ -115,7 +118,7 @@ export default function HuggingFaceImport({
               question = <code>{result.fields.question}</code>, answer = <code>{result.fields.answer}</code>, context ={" "}
               <code>{result.fields.context}</code>
             </dd>
-            <dt>ChromaDB</dt>
+            <dt>{vectorDb}</dt>
             <dd>
               {result.embedding.status === "ok"
                 ? `${plural(result.embedding.uniqueContexts, "unique context")} embedded as ${plural(result.embedding.chunksUpserted, "chunk")} in "${result.embedding.collection}".`

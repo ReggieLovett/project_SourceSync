@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import type { ChromaRecord } from "../lib/chroma";
+import type { VectorRecord } from "../lib/vector-store";
 import { AppError } from "../lib/errors";
 import { collectText, detectField, getPath, importHuggingFaceDataset } from "../lib/huggingface-importer";
 
@@ -75,8 +75,8 @@ describe("importHuggingFaceDataset", () => {
         num_rows_total: 10570,
       }),
     });
-    const upserted: ChromaRecord[][] = [];
-    const upsert = async (collection: string, records: ChromaRecord[]) => {
+    const upserted: VectorRecord[][] = [];
+    const upsert = async (collection: string, records: VectorRecord[]) => {
       assert.equal(collection, "hf_test_contexts");
       upserted.push(records);
       return records.length;

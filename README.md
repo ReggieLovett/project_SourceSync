@@ -2,15 +2,15 @@
 
 Source Sync keeps AI answers in sync with their sources: a RAG chatbot paired with a hallucination checker that verifies every answer claim by claim against its source document, with the exact quote as proof. It is a local Next.js (App Router) platform with three connected modules:
 
-1. **Document Q&A chatbot (the generator).** Upload a PDF or DOCX; it is chunked and embedded into a local ChromaDB collection, and Groq answers questions strictly from the retrieved excerpts. This is the "RAG system under test."
+1. **Document Q&A chatbot (the generator).** Upload a PDF or DOCX; it is chunked and embedded into a vector database (a local ChromaDB collection, or Pinecone when deployed), and Groq answers questions strictly from the retrieved excerpts. This is the "RAG system under test."
 2. **Verification engine (the checker).** Splits an answer into atomic claims, verifies each against the context (verdict, exact evidence quote, confidence), and scores faithfulness, answer relevance, and context relevance. Healthcare Strictness Mode accepts "Supported" only when the context states the claim literally and confidence is ≥ 0.95.
-3. **Hugging Face importer and batch audits.** Pulls Q/A/context rows from a Hugging Face dataset, embeds the contexts into ChromaDB, runs them (or a local JSON file) through the checker in parallel, and exports a CSV audit report.
+3. **Hugging Face importer and batch audits.** Pulls Q/A/context rows from a Hugging Face dataset, embeds the contexts into the vector database, runs them (or a local JSON file) through the checker in parallel, and exports a CSV audit report.
 
 The frontend is semantic HTML with one stylesheet, [app/globals.css](app/globals.css), in a modern rendition of Ghost of Tsushima's menu language: a sumi-ink rail beside a washi-grey ground, white paper work surfaces, crisp square controls, Zen Kaku Gothic New for the interface and Shippori Mincho for source text and evidence, crimson for the brand and the current mode, and gold for status on ink. The one signature move is the verdict seal: Supported and Contradicted are solid stamped seals, Unsupported is a hollow one, and they stamp in row by row the first time a check lands. The logo, the **Sync seal** (a crimson seal with two carved brush strokes set like an equals sign: the answer and its source, in sync) beside the SOURCE SYNC wordmark, is designed in Canva (design "Source Sync logo") and shipped as [app/assets/source-sync-logo.png](app/assets/source-sync-logo.png) in the sidebar; the seal alone is the favicon, [app/icon.svg](app/icon.svg). Fonts are self-hosted with `next/font` in `app/layout.tsx` (with `preload: false`, so the browser fetches only the few Latin slices the page uses). The stylesheet targets only elements and the `data-verdict`, `data-status`, `data-role`, and `data-fresh` hooks, with no classes and no inline styles. Without it, verdicts still read through content markers (🟢 Supported, 🔴 Contradicted, 🟡 Unsupported). Design decisions are recorded in `PRODUCT.md` and `DESIGN.md`.
 
 ## Run it
 
-To put it online on Vercel with Chroma Cloud, see [DEPLOY.md](DEPLOY.md). To run it on your own computer:
+To put it online on Vercel with Pinecone, see [DEPLOY.md](DEPLOY.md). To run it on your own computer:
 
 Requirements: Node.js 22+ and a Groq API key. The internet is needed for Groq, Hugging Face, and the first download of the embedding model.
 
@@ -50,7 +50,7 @@ The sidebar switches between five modes, one on screen at a time. Each mode keep
 | --- | --- |
 | Groq client (groq-sdk): structured JSON, retries, error mapping | `lib/groq.ts` |
 | PDF (pdf-parse) / DOCX (mammoth) parsing, ingestion, retrieval | `lib/documents.ts`, `lib/chunking.ts` |
-| ChromaDB with Chroma's default embedding function | `lib/chroma.ts` |
+| Vector database: local ChromaDB (Chroma's default embedding function) or Pinecone (hosted embeddings) | `lib/vector-store.ts`, `lib/chroma.ts`, `lib/pinecone.ts` |
 | Chatbot (plain or document-grounded) | `lib/chatbot.ts`, `app/api/chat/route.ts`, `app/api/upload/route.ts`, `app/api/extract/route.ts` |
 | Verification engine | `lib/checker.ts`, `lib/evidence.ts`, `app/api/check/route.ts` |
 | Hugging Face importer | `lib/huggingface-importer.ts`, `app/api/import-hf/route.ts` |
@@ -58,9 +58,9 @@ The sidebar switches between five modes, one on screen at a time. Each mode keep
 | CSV audit export (client-safe) | `lib/export.ts` |
 | Shared types, config, HTTP helpers | `lib/types.ts`, `lib/config.ts`, `lib/http.ts`, `lib/errors.ts` |
 | History: saved conversations and checks (one JSON file each) | `lib/history.ts`, `app/api/history/route.ts`, `app/api/history/[id]/route.ts`, `app/components/SavedHistory.tsx` |
-| Dashboard (semantic HTML + one stylesheet), logo, icons | `app/page.tsx`, `app/components/*`, `app/globals.css`, `app/icon.svg` |
+| Dashboard (semantic HTML + one stylesheet), logo, icons | `app/page.tsx`, `app/components/Dashboard.tsx`, `app/components/*`, `app/globals.css`, `app/icon.svg` |
 
-**Retrieval.** Uploaded text is split into sentence-aware chunks (about 1,000 characters with about 150 characters of overlap). The chunks are embedded with Chroma's `DefaultEmbeddingFunction` from `@chroma-core/default-embed` (all-MiniLM-L6-v2, cosine space) and stored in the `uploaded_documents` collection, tagged with a `documentId`, which is a hash of the extracted text, so re-uploading the same file replaces its chunks. Chat retrieves the top 5 chunks for the latest question and filters them to the active document.
+**Retrieval.** Uploaded text is split into sentence-aware chunks (about 1,000 characters with about 150 characters of overlap). The chunks are embedded with Chroma's `DefaultEmbeddingFunction` from `@chroma-core/default-embed` (all-MiniLM-L6-v2, cosine space) and stored in the `uploaded_documents` collection, tagged with a `documentId`, which is a hash of the extracted text, so re-uploading the same file replaces its chunks. Chat retrieves the top 5 chunks for the latest question and filters them to the active document. With `PINECONE_API_KEY` set, the same chunks go to a Pinecone namespace named after the collection, Pinecone embeds them with `llama-text-embed-v2`, and its similarity scores are reported as cosine distance.
 
 **Verification (`lib/checker.ts`).**
 1. Groq extracts atomic, self-contained claims from the answer (at most 40, deduplicated).
@@ -77,7 +77,7 @@ The flag exists because a confidence threshold alone barely gated anything: `ope
 
 ## API
 
-All routes are `POST` except History's. JSON routes need `Content-Type: application/json`. Errors return `{ "error": string, "code": string, "details"?: [{ path, message }] }` with a matching HTTP status (400 validation, 404 not found, 413 too large, 415 wrong type, 422 unreadable file, 429 Groq rate limit, 502 upstream failure, 503 Chroma down, 504 timeout).
+All routes are `POST` except History's. JSON routes need `Content-Type: application/json`. Errors return `{ "error": string, "code": string, "details"?: [{ path, message }] }` with a matching HTTP status (400 validation, 404 not found, 413 too large, 415 wrong type, 422 unreadable file, 429 Groq rate limit, 502 upstream failure, 503 vector database or History store unavailable or not configured, 504 timeout).
 
 ### `POST /api/upload`
 
@@ -149,7 +149,7 @@ The response is `{ createdAt, durationMs, strictnessMode, concurrency, model, su
   "questionField": "question", "answerField": "answer", "contextField": "knowledge", "embed": true }
 ```
 
-Only `dataset` is required. If you omit the config, the first one is used. If you omit the split, test is preferred, then validation, then train. Columns are detected from common names (question/query/prompt, answer/response/answers/right_answer, context/knowledge/documents/passages). Field paths such as `answers.text.0` are supported, and list or object values are flattened to text. `limit` is 1 to 50 rows per request. Rows truncated by the Hugging Face viewer, or missing any field, are listed in `skipped`. Unique contexts are chunked and embedded into the `hf_test_contexts` collection with the default embedding function. If Chroma is down, the items are still returned with `embedding.status: "failed"`. The returned `items` can be posted to `/api/batch-check` unchanged.
+Only `dataset` is required. If you omit the config, the first one is used. If you omit the split, test is preferred, then validation, then train. Columns are detected from common names (question/query/prompt, answer/response/answers/right_answer, context/knowledge/documents/passages). Field paths such as `answers.text.0` are supported, and list or object values are flattened to text. `limit` is 1 to 50 rows per request. Rows truncated by the Hugging Face viewer, or missing any field, are listed in `skipped`. Unique contexts are chunked and embedded into the `hf_test_contexts` collection (or Pinecone namespace). If the vector database is unreachable, the items are still returned with `embedding.status: "failed"`. The returned `items` can be posted to `/api/batch-check` unchanged.
 
 Tested datasets: `rajpurkar/squad` (gold answers, so all claims should be Supported) and `pminervini/HaluEval` with config `qa_samples` (a mix of correct and hallucinated answers). Gated datasets need `HF_TOKEN`.
 
@@ -168,11 +168,12 @@ The dashboard saves with `PUT /api/history/<id>`, where `<id>` is a client-gener
 | `GROQ_MAX_RETRIES` | `2` | Retries for timeouts, network errors, and 5xx |
 | `GROQ_RATE_LIMIT_WAIT_MS` | `90000` | How long one request may wait out 429 rate limits |
 | `CHROMA_HOST`, `CHROMA_PORT` | `localhost`, `8000` | Local Chroma server |
-| `CHROMA_DOCUMENTS_COLLECTION` | `uploaded_documents` | Uploaded document chunks |
-| `CHROMA_HF_COLLECTION` | `hf_test_contexts` | Imported Hugging Face contexts |
+| `CHROMA_DOCUMENTS_COLLECTION` | `uploaded_documents` | Uploaded document chunks (also the Pinecone namespace) |
+| `CHROMA_HF_COLLECTION` | `hf_test_contexts` | Imported Hugging Face contexts (also the Pinecone namespace) |
 | `HF_TOKEN` | (empty) | Token for gated or private datasets |
 | `HISTORY_DIR` | `.data/history` | Folder for saved conversations and checks (gitignored) |
-| `CHROMA_API_KEY`, `CHROMA_TENANT`, `CHROMA_DATABASE` | (empty) | Use Chroma Cloud and its hosted embeddings instead of local Chroma (see DEPLOY.md) |
+| `PINECONE_API_KEY` | (empty) | Use Pinecone and its hosted embeddings instead of local Chroma; required on Vercel (see DEPLOY.md) |
+| `PINECONE_INDEX` | `source-sync` | Pinecone index, created once with `npm run pinecone:setup` |
 | `SITE_PASSWORD` | (empty) | Password for every page and API route; required on Vercel |
 | `BLOB_READ_WRITE_TOKEN` | (set by Vercel) | Stores History in a private Vercel Blob store instead of files |
 
@@ -188,10 +189,11 @@ npm test
 npm run build
 ```
 
-There are 43 unit tests: checker logic and Healthcare Mode (including the literal-match gate), evidence matching, CSV export, batch concurrency and summaries, the Hugging Face importer, real PDF/DOCX parsing, chunking, and the Groq client against a local mock server (timeouts, 429/5xx retries, error mapping). They use injected fakes or local servers and never call Groq or Hugging Face.
+There are 68 unit tests: checker logic and Healthcare Mode (including the literal-match gate), evidence matching, CSV export, batch concurrency and summaries, the Hugging Face importer, real PDF/DOCX parsing, chunking, History, the deployment settings (site password, vector database and History selection, the Pinecone backend, Vercel Blob), and the Groq client against a local mock server (timeouts, 429/5xx retries, error mapping). They use injected fakes or local servers and never call Groq, Hugging Face, Pinecone, or Vercel.
 
 ## Notes
 
 - `chromadb` is loaded at runtime with `import(/* webpackIgnore: true */ "chromadb")`, because it dynamically imports `@chroma-core/*` packages, which Turbopack cannot bundle. pdf-parse, pdfjs-dist, and the embedding packages are listed in `serverExternalPackages`.
+- Deployments leave the local ONNX embedding stack out (`next.config.mjs`), so hosted builds need Pinecone; local Chroma is for running on your own computer.
 - The previous Chroma collection `rag_hf_minilm_v1` (SQuAD plus Transformers docs from the old app) is still in `.chroma/` but is no longer used.
 - Faithfulness measures support in the provided context, not real-world truth. Verdicts and confidence come from an LLM and can be wrong; quote validation only proves that the cited text exists.

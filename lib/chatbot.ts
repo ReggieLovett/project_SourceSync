@@ -9,7 +9,7 @@ import type { ChatResponse } from "./types";
 export const NOT_IN_DOCUMENT = "The uploaded document does not contain information to answer this question.";
 
 export const chatRequestSchema = z.object({
-  // Omitted or null: plain chat with no document (no retrieval, no Chroma).
+  // Omitted or null: plain chat with no document (no retrieval, no vector database).
   documentId: z.string().regex(/^doc_[a-f0-9]{16}$/, "documentId is invalid; attach the document again.").nullish(),
   messages: z
     .array(z.object({
@@ -38,7 +38,7 @@ Say plainly when you are unsure or do not know, rather than guessing. Be concise
 
 /**
  * Chat with Groq. With a documentId this is the "RAG system under test":
- * retrieve from Chroma, then answer only from the excerpts. Without one it is
+ * retrieve from the vector database, then answer only from the excerpts. Without one it is
  * a plain chatbot, and the answer has no context to check against.
  */
 export async function answerChat(request: unknown, signal?: AbortSignal): Promise<ChatResponse> {

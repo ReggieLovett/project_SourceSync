@@ -9,13 +9,14 @@
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test tests/*.test.ts",
     "chroma:start": "node scripts/start-chroma.mjs",
-    "chroma:install": "node scripts/install-chroma.mjs"
+    "chroma:install": "node scripts/install-chroma.mjs",
+    "pinecone:setup": "node scripts/pinecone-setup.mjs"
   },
   "dependencies": {
-    "@chroma-core/chroma-cloud-qwen": "0.1.12",
     "@chroma-core/default-embed": "^0.1.9",
     "@huggingface/transformers": "^3.8.1",
     "@next/env": "^16.4.3",
+    "@pinecone-database/pinecone": "9.1.0",
     "@vercel/blob": "2.8.2",
     "chromadb": "^3.5.0",
     "groq-sdk": "^1.6.0",

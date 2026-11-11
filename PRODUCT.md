@@ -23,7 +23,7 @@ Claim-level verification with evidence: not a single trust score, but each atomi
 - Shown live on a projector to an audience; first impressions and legibility at distance matter.
 - The demo flow: upload a PDF/DOCX → chat → Send to checker → Run check → read the claims table; then Hugging Face import → Batch check → Download CSV Audit Report.
 - Runs locally: Next.js dev server, a local ChromaDB server, and the Groq API (key in `.env.local`).
-- Can also be deployed to Vercel (free Hobby plan) with Chroma Cloud for vectors and embeddings, Vercel Blob for History, and a required site password; see DEPLOY.md.
+- Can also be deployed to Vercel (free Hobby plan) with Pinecone (free Starter plan) for vectors and embeddings, Vercel Blob for History, and a required site password; see DEPLOY.md.
 
 ## Capabilities and Constraints
 

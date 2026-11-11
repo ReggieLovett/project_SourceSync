@@ -205,26 +205,33 @@ export function fileHistoryStore(dir: string): HistoryStore {
 }
 
 /** The part of @vercel/blob this store uses; tests pass an in-memory stand-in. */
-export type BlobApi = Pick<typeof import("@vercel/blob"), "put" | "get" | "list" | "del">;
+export type BlobApi = Pick<
+  typeof import("@vercel/blob"),
+  | "put" | "get" | "list" | "del"
+  | "BlobStoreSuspendedError" | "BlobStoreNotFoundError" | "BlobAccessError"
+  | "BlobServiceRateLimited" | "BlobServiceNotAvailable"
+>;
 
 const BLOB_READ_CONCURRENCY = 6;
 
-/** Turn Vercel Blob failures into messages that say what to do in the Vercel dashboard. */
-function blobError(error: unknown): AppError {
+/**
+ * Turn Vercel Blob failures into messages that say what to do in the Vercel dashboard.
+ * Blob errors don't set error.name and production bundles minify class names, so
+ * they are matched with instanceof against the library's own classes.
+ */
+function blobError(error: unknown, api: BlobApi | undefined): AppError {
   if (error instanceof AppError) return error;
-  switch ((error as Error | null)?.constructor?.name) {
-    case "BlobStoreSuspendedError":
-      return new AppError(503, "HISTORY_STORE_SUSPENDED", "Vercel has paused this Blob store, usually because the free plan's monthly limit was reached. History will work again when the limit resets.");
-    case "BlobStoreNotFoundError":
-    case "BlobAccessError":
-      return new AppError(503, "HISTORY_STORE_UNAVAILABLE", "Vercel could not open the Blob store for History. Check that a private Blob store is connected to this project, then redeploy.");
-    case "BlobServiceRateLimited":
-    case "BlobServiceNotAvailable":
-      return new AppError(503, "HISTORY_STORE_BUSY", "Vercel Blob is busy. Retry in a moment.");
-    default:
-      console.error("[history] Vercel Blob error", error);
-      return new AppError(503, "HISTORY_STORE_ERROR", "Saving or loading History in Vercel Blob failed. Check the Vercel function logs.");
+  if (api && error instanceof api.BlobStoreSuspendedError) {
+    return new AppError(503, "HISTORY_STORE_SUSPENDED", "Vercel has paused this Blob store, usually because the free plan's monthly limit was reached. History will work again when the limit resets.");
   }
+  if (api && (error instanceof api.BlobStoreNotFoundError || error instanceof api.BlobAccessError)) {
+    return new AppError(503, "HISTORY_STORE_UNAVAILABLE", "Vercel could not open the Blob store for History. Check that a private Blob store is connected to this project, then redeploy.");
+  }
+  if (api && (error instanceof api.BlobServiceRateLimited || error instanceof api.BlobServiceNotAvailable)) {
+    return new AppError(503, "HISTORY_STORE_BUSY", "Vercel Blob is busy. Retry in a moment.");
+  }
+  console.error("[history] Vercel Blob error", error);
+  return new AppError(503, "HISTORY_STORE_ERROR", "Saving or loading History in Vercel Blob failed. Check the Vercel function logs.");
 }
 
 /**
@@ -234,10 +241,12 @@ function blobError(error: unknown): AppError {
 export function blobHistoryStore(prefix: string, loadApi: () => Promise<BlobApi> = () => import("@vercel/blob")): HistoryStore {
   const pathFor = (id: string) => `${prefix}${id}.json`;
   async function guarded<T>(task: (api: BlobApi) => Promise<T>): Promise<T> {
+    let api: BlobApi | undefined;
     try {
-      return await task(await loadApi());
+      api = await loadApi();
+      return await task(api);
     } catch (error) {
-      throw blobError(error);
+      throw blobError(error, api);
     }
   }
   async function readBlob(api: BlobApi, pathname: string): Promise<HistoryEntry | null> {

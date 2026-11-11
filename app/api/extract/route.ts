@@ -7,7 +7,7 @@ export const maxDuration = 120;
 
 /**
  * multipart/form-data with a "file" field (PDF or DOCX) → ExtractedDocument.
- * Only extracts text, for the checker's context; nothing is stored in Chroma.
+ * Only extracts text, for the checker's context; nothing is stored in the vector database.
  */
 export async function POST(request: Request): Promise<Response> {
   try {

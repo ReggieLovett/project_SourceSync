@@ -50,6 +50,15 @@ Updated 2026-11-01. The project was rebuilt into the "AI Chatbot & RAG Hallucina
 - `next.config.mjs` excludes the ~350 MB ONNX embedding stack from deployments and explicitly includes `chromadb` and the Qwen package (both loaded via `webpackIgnore`). Chroma routes trace to about 93 MB (limit 250 MB).
 - Verified: 63 tests (9 new), typecheck, build, and a temporary standalone build run with fake credentials: password prompt, packaged `chromadb` and Qwen loading, Chroma Cloud reached and its rejection mapped, and each missing-configuration message. Local dev mode is unchanged. Not yet verified: a real Vercel deployment with real Chroma Cloud and Blob credentials.
 
+## Follow-up, 2026-11-11: Pinecone instead of Chroma Cloud
+
+- Deployments now use Pinecone, replacing the Chroma Cloud mode described above (`CHROMA_API_KEY`, `CHROMA_TENANT`, `CHROMA_DATABASE` and `@chroma-core/chroma-cloud-qwen` are gone). Local development still uses local Chroma by default.
+- `lib/vector-store.ts` is the one interface the app calls; it picks `lib/pinecone.ts` when `PINECONE_API_KEY` is set (required on Vercel) and `lib/chroma.ts` otherwise. Collections become namespaces in one index (`PINECONE_INDEX`, default `source-sync`), and Pinecone embeds the `text` field with `llama-text-embed-v2`. `@pinecone-database/pinecone` 9.1.0, pinned.
+- `npm run pinecone:setup` (`scripts/pinecone-setup.mjs`) creates the index once. Uploads wait until Pinecone can search the new chunks, since it is eventually consistent.
+- The sidebar and Hugging Face import name the vector database in use; `app/page.tsx` is now a server component that passes it to `app/components/Dashboard.tsx`.
+- Pinecone and Blob errors are mapped by `error.name` and `instanceof`, not constructor names, which production bundles minify (found by testing the production build).
+- Verified: 68 tests, typecheck, build, the setup script reaching Pinecone with a test key, and a standalone production build (password prompt, sidebar label, Pinecone's rejection mapped to `VECTOR_ACCESS_DENIED`, missing-configuration messages). Local mode unchanged. Not yet verified: a real Pinecone index, Vercel deployment, or Blob store.
+
 ## Known limitations
 
 - **Healthcare Mode** still relies on LLM judgments. The literal-match flag made the gate effective in testing, but the flag and verdicts can still be wrong, so treat results as an audit aid, not clinical validation.

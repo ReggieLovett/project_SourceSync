@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { chunkText, stableHash } from "./chunking";
-import { upsertRecords, type ChromaRecord } from "./chroma";
-import { chromaSettings, LIMITS } from "./config";
+import { collectionNames, LIMITS } from "./config";
+import { upsertRecords, type VectorRecord } from "./vector-store";
 import { AppError, cancelledError, describeError } from "./errors";
 import type { BatchItem, HfEmbeddingSummary, HfImportResponse } from "./types";
 
@@ -162,7 +162,7 @@ type RowsPage = {
 
 /**
  * Fetch rows from the Hugging Face dataset viewer, map them to Q/A/Context
- * batch items, and embed the unique contexts into Chroma with the default
+ * batch items, and embed the unique contexts into the vector database (local Chroma or Pinecone) with its
  * embedding function. Embedding failures are reported without discarding the items.
  */
 export async function importHuggingFaceDataset(body: unknown, deps: ImporterDependencies = {}): Promise<HfImportResponse> {
@@ -223,10 +223,10 @@ export async function importHuggingFaceDataset(body: unknown, deps: ImporterDepe
     });
   }
 
-  const { hfCollection } = chromaSettings();
+  const { hfCollection } = collectionNames();
   let embedding: HfEmbeddingSummary = { status: "skipped", collection: hfCollection };
   if (request.embed && items.length > 0) {
-    const records: ChromaRecord[] = [];
+    const records: VectorRecord[] = [];
     const seen = new Set<string>();
     for (const item of items) {
       const context = item.context as string;

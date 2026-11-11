@@ -50,33 +50,48 @@ export function isHosted(): boolean {
   return Boolean(process.env.NEXT_PUBLIC_VERCEL_ENV || process.env.VERCEL);
 }
 
-export type ChromaSettings =
-  | { mode: "local"; host: string; port: number; documentsCollection: string; hfCollection: string }
-  | { mode: "cloud"; apiKey: string; tenant: string; database: string; documentsCollection: string; hfCollection: string };
-
-/**
- * Local Chroma (npm run chroma:start) unless CHROMA_API_KEY is set, which switches to
- * Chroma Cloud. Cloud mode also embeds with Chroma Cloud's hosted Qwen model, so the
- * deployment never loads the local ONNX embedding stack.
- */
-export function chromaSettings(): ChromaSettings {
-  const collections = {
+/** Where uploaded documents and imported contexts are stored (collection = Pinecone namespace). */
+export function collectionNames() {
+  return {
     documentsCollection: collectionName("CHROMA_DOCUMENTS_COLLECTION", "uploaded_documents"),
     hfCollection: collectionName("CHROMA_HF_COLLECTION", "hf_test_contexts"),
   };
-  const apiKey = text("CHROMA_API_KEY");
+}
+
+/** The local Chroma server started by `npm run chroma:start`. */
+export function chromaSettings() {
+  return {
+    host: text("CHROMA_HOST") ?? "localhost",
+    port: integer("CHROMA_PORT", 8000, 1, 65_535),
+    ...collectionNames(),
+  };
+}
+
+const PINECONE_INDEX_NAME = /^[a-z0-9](?:[a-z0-9-]{0,43}[a-z0-9])?$/;
+
+export type VectorStoreSettings =
+  | { backend: "chroma"; host: string; port: number }
+  | { backend: "pinecone"; apiKey: string; index: string };
+
+/**
+ * Local Chroma unless PINECONE_API_KEY is set, which switches to Pinecone: its index
+ * stores the chunks and embeds them with a hosted model, so deployments never load
+ * the local ONNX embedding stack. On Vercel, Pinecone is required.
+ */
+export function vectorStoreSettings(): VectorStoreSettings {
+  const apiKey = text("PINECONE_API_KEY");
   if (apiKey) {
-    const tenant = text("CHROMA_TENANT");
-    const database = text("CHROMA_DATABASE");
-    if (!tenant || !database) {
-      throw new AppError(500, "INVALID_CONFIGURATION", "Chroma Cloud needs CHROMA_TENANT and CHROMA_DATABASE as well as CHROMA_API_KEY. All three are shown in the Chroma Cloud dashboard.");
+    const index = text("PINECONE_INDEX") ?? "source-sync";
+    if (!PINECONE_INDEX_NAME.test(index)) {
+      throw new AppError(500, "INVALID_CONFIGURATION", "PINECONE_INDEX must be 1-45 lowercase letters, digits, or hyphens, starting and ending with a letter or digit.");
     }
-    return { mode: "cloud", apiKey, tenant, database, ...collections };
+    return { backend: "pinecone", apiKey, index };
   }
   if (isHosted()) {
-    throw new AppError(503, "CHROMA_NOT_CONFIGURED", "This deployment has no Chroma database. Set CHROMA_API_KEY, CHROMA_TENANT, and CHROMA_DATABASE in the Vercel project's environment variables, then redeploy.");
+    throw new AppError(503, "VECTOR_STORE_NOT_CONFIGURED", "This deployment has no vector database. Set PINECONE_API_KEY (and PINECONE_INDEX if your index isn't named source-sync) in the Vercel project's environment variables, then redeploy.");
   }
-  return { mode: "local", host: text("CHROMA_HOST") ?? "localhost", port: integer("CHROMA_PORT", 8000, 1, 65_535), ...collections };
+  const { host, port } = chromaSettings();
+  return { backend: "chroma", host, port };
 }
 
 /**
